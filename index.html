@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDR Team Dashboard – Q1 2026</title>
+<style>
+  :root {
+    --bg:#f0f2f7;--bg2:#ffffff;--border:#e2e5ef;--border2:#c8cde0;
+    --text:#1a1d2e;--text2:#6b7494;--text3:#a0a8c0;
+    --blue:#4361ee;--blue-light:#eef0fd;
+    --green:#0d9f6e;--green-light:#e6f7f2;
+    --amber:#d97706;--amber-light:#fef3e2;
+    --red:#dc2626;--red-light:#fef2f2;
+    --purple:#7c3aed;--purple-light:#f3f0ff;
+    --teal:#0891b2;--teal-light:#ecfeff;
+    --radius:14px;--shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;}
+  .page{max-width:1320px;margin:0 auto;padding:24px 20px;}
+  .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+  .header h1{font-size:20px;font-weight:700;}
+  .header-sub{font-size:12px;color:var(--text2);margin-top:3px;}
+  .wd-status{font-size:11px;color:var(--text3);margin-top:3px;}
+  .header-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .pill-group{display:flex;background:#fff;border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px;box-shadow:var(--shadow-sm);}
+  .pill-btn{padding:5px 14px;border-radius:999px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .pill-btn.active{background:var(--blue);color:#fff;}
+  .pill-btn:hover:not(.active){color:var(--text);background:var(--bg);}
+  .update-btn{display:flex;align-items:center;gap:6px;padding:7px 16px;background:var(--blue);color:#fff;border:none;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+  .update-btn:hover{opacity:.88;}
+  /* Team strip */
+  .team-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+  .team-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);}
+  .tc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;}
+  .tc-value{font-size:22px;font-weight:700;line-height:1;}
+  .tc-target{font-size:11px;color:var(--text2);margin-top:4px;}
+  .tc-badge{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-top:8px;}
+  .tc-badge.green{background:var(--green-light);color:var(--green);}
+  .tc-badge.amber{background:var(--amber-light);color:var(--amber);}
+  .tc-badge.red{background:var(--red-light);color:var(--red);}
+  .tc-badge.blue{background:var(--blue-light);color:var(--blue);}
+  /* Region */
+  .region-heading{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin:28px 0 14px;display:flex;align-items:center;gap:10px;}
+  .region-heading::after{content:'';flex:1;height:1px;background:var(--border);}
+  /* Cards */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+  .rep-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .rep-card-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .rep-name{font-size:14px;font-weight:700;}
+  .rep-tags{display:flex;gap:5px;margin-top:3px;}
+  .role-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;}
+  .tag-ob{background:var(--teal-light);color:var(--teal);}
+  .tag-ib{background:var(--purple-light);color:var(--purple);}
+  .tag-apac{background:var(--amber-light);color:var(--amber);}
+  .tag-ramp{background:#f1f2f6;color:var(--text2);}
+  .tag-hybrid{background:var(--blue-light);color:var(--blue);}
+  .weighted-badge{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+  .wb-green{background:var(--green-light);color:var(--green);}
+  .wb-amber{background:var(--amber-light);color:var(--amber);}
+  .wb-red{background:var(--red-light);color:var(--red);}
+  .wb-muted{background:#f1f2f6;color:var(--text3);}
+  .rep-card-body{padding:12px 16px 14px;display:flex;flex-direction:column;gap:11px;}
+  /* Metric rows */
+  .metric-row{display:flex;flex-direction:column;gap:5px;}
+  .metric-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:flex;align-items:center;justify-content:space-between;}
+  .metric-pcts{display:flex;gap:14px;margin-top:2px;}
+  .mpi-label{font-size:10px;color:var(--text3);}
+  .mpi-val{font-size:12px;font-weight:700;}
+  .mpi-val.green{color:var(--green);} .mpi-val.amber{color:var(--amber);} .mpi-val.red{color:var(--red);} .mpi-val.muted{color:var(--text2);}
+  .bar-wrap{position:relative;height:6px;background:#eef0f5;border-radius:999px;overflow:visible;margin-top:3px;}
+  .bar-fill{height:100%;border-radius:999px;}
+  .bar-marker{position:absolute;top:-3px;width:2px;height:12px;background:var(--text2);border-radius:1px;opacity:.4;}
+  .metric-divider{height:1px;background:var(--border);margin:1px 0;}
+  .no-tgt-note{font-size:11px;color:var(--text3);margin-top:1px;}
+  .inactive-note{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0;}
+  /* Legacy box */
+  .legacy-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:14px 16px;margin-top:14px;}
+  .legacy-box-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px;}
+  .legacy-row-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);}
+  .legacy-row-item:last-child{border-bottom:none;}
+  .legacy-total-row{display:flex;justify-content:space-between;padding:6px 0 0;margin-top:4px;}
+  .legacy-total-label{font-size:11px;font-weight:700;color:var(--text2);}
+  .legacy-total-val{font-size:13px;font-weight:700;}
+  /* Modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,18,35,.55);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:18px;padding:30px;max-width:460px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.18);}
+  .modal h2{font-size:17px;font-weight:700;margin-bottom:6px;}
+  .modal p{color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:20px;}
+  .drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:border-color .15s;}
+  .drop-zone:hover{border-color:var(--blue);background:var(--blue-light);}
+  .dz-icon{font-size:32px;margin-bottom:10px;}
+  .dz-main{font-size:14px;font-weight:600;}
+  .dz-sub{font-size:12px;color:var(--text2);margin-top:4px;}
+  .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+  .btn-cancel{padding:8px 18px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:999px;cursor:pointer;font-size:13px;}
+  .btn-confirm{padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;}
+  #upload-input{display:none;}
+  #upload-status{font-size:12px;color:var(--text2);margin-top:12px;min-height:16px;}
+  @media(max-width:640px){.cards-grid{grid-template-columns:1fr;}.team-strip{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div>
+      <h1>SDR Performance Dashboard</h1>
+      <div class="header-sub">Q1 2026 · Updated <span id="lu-date"></span></div>
+      <div class="wd-status" id="wd-status"></div>
+    </div>
+    <div class="header-controls">
+      <div class="pill-group" id="month-pills">
+        <button class="pill-btn" onclick="setMonth(0,this)">Jan</button>
+        <button class="pill-btn" onclick="setMonth(1,this)">Feb</button>
+        <button class="pill-btn active" onclick="setMonth(2,this)">Mar</button>
+        <button class="pill-btn" onclick="setMonth(3,this)">Q1</button>
+      </div>
+      <div class="pill-group" id="region-pills">
+        <button class="pill-btn active" onclick="setRegion('all',this)">All</button>
+        <button class="pill-btn" onclick="setRegion('emea',this)">EMEA</button>
+        <button class="pill-btn" onclick="setRegion('apac',this)">APAC</button>
+      </div>
+      <button class="update-btn" onclick="openModal()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>
+        Update from Salesforce
+      </button>
+    </div>
+  </div>
+  <div id="team-strip"></div>
+  <div id="cards-container"></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Update from Salesforce</h2>
+    <p>Upload your Salesforce dashboard screenshot and Claude will read the numbers and update every rep's actuals for the selected month automatically.</p>
+    <div class="drop-zone" onclick="document.getElementById('upload-input').click()">
+      <div class="dz-icon">📊</div>
+      <div class="dz-main">Click to upload screenshot</div>
+      <div class="dz-sub">PNG or JPG · Select multiple charts at once</div>
+    </div>
+    <input type="file" id="upload-input" accept="image/*" multiple onchange="handleUpload(this)">
+    <div id="upload-status"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const G = 1.15; // GBP→EUR
+
+const WD = {
+  0:{total:22,days:[2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30]},
+  1:{total:20,days:[2,3,4,5,6,9,10,11,12,13,16,17,18,19,20,23,24,25,26,27]},
+  2:{total:21,days:[2,3,4,5,6,9,10,11,12,13,16,17,18,19,20,23,24,25,26,27,30]}
+};
+
+function wdFrac(m) {
+  const t=new Date(), tm=t.getMonth(), td=t.getDate();
+  if(tm>m) return 1;
+  if(tm<m) return 0;
+  return WD[m].days.filter(d=>d<=td).length / WD[m].total;
+}
+
+// types[]: 'hybrid'|'outbound'|'inbound'|'ramp'|null(not active that month)
+// isLegacyQ1: hide card in Q1 view, show only in legacy box
+const REPS = [
+  { id:'loic',    name:'Loic',    region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['hybrid','inbound','inbound'],
+    targets: [{demos:15,book:15000}, {demos:null,book:15000}, {demos:null,book:36000}],
+    actuals: [{demos:9, book:20877}, {demos:2,   book:36742}, {demos:5,   book:56763.90}],
+    pipe:    [{t:40051,a:87203},     {t:96122,a:300171},      {t:96122,a:594000}] },
+
+  { id:'majd',    name:'Majd',    region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','inbound'],
+    targets: [{demos:15,book:15000}, {demos:15,book:15000},   {demos:null,book:15000}],
+    actuals: [{demos:16,book:9878},  {demos:14,book:13995},   {demos:0,   book:16304.40}],
+    pipe:    [{t:107399,a:51742},    {t:107399,a:139072},     {t:107399,a:242000}] },
+
+  { id:'yannis',  name:'Yannis',  region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['hybrid','outbound','outbound'],
+    targets: [{demos:15,book:15000}, {demos:15,book:15000},   {demos:15,book:8000}],
+    actuals: [{demos:16,book:9142},  {demos:17,book:21173},   {demos:12,book:6747.60}],
+    pipe:    [{t:69917,a:87873},     {t:40000,a:100124},      {t:40000,a:19000}] },
+
+  { id:'aissa',   name:'Aissa',   region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['hybrid','outbound',null],
+    targets: [{demos:15,book:15000}, {demos:15,book:15000},   null],
+    actuals: [{demos:14,book:17412}, {demos:10,book:21246},   null],
+    pipe:    [{t:69917,a:79883},     {t:40000,a:91855},       null] },
+
+  // Viola: ramp Jan (no targets, 3 demos), ramp Feb (10 demo target, no booking target), OB Mar
+  { id:'viola',   name:'Viola',   region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['ramp','ramp','outbound'],
+    targets: [null,                  {demos:10,book:null},    {demos:15,book:8000}],
+    actuals: [{demos:3,book:null},   {demos:8, book:3600},    {demos:18,book:6036}],
+    pipe:    [null,                  {t:40000,a:43154},       {t:40000,a:71000}] },
+
+  // Aron & Ece: Sr SDR Jan only. isLegacyQ1:true → no card in Q1 view, only in legacy box
+  { id:'aron',    name:'Aron',    region:'EMEA', gbp:false, isLegacyQ1:true,
+    types:   ['hybrid',null,null],
+    targets: [{demos:18,book:17250}, null, null],
+    actuals: [{demos:12,book:9144},  null, null],
+    pipe:    [null,null,null] },
+
+  { id:'ece',     name:'Ece',     region:'EMEA', gbp:false, isLegacyQ1:true,
+    types:   ['hybrid',null,null],
+    targets: [{demos:18,book:17250}, null, null],
+    actuals: [{demos:11,book:20639},  null, null],
+    pipe:    [null,null,null] },
+
+  { id:'isa',     name:'Isa',     region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['ramp','ramp','ramp'],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'valeria', name:'Valeria', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['ramp','ramp','ramp'],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'khye',    name:'Khye',    region:'APAC', gbp:true,  isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
+    actuals: [{demos:14,book:6394*G}, {demos:16,book:4673*G}, {demos:8, book:6492*G}],
+    pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:117300}] },
+
+  { id:'stanly',  name:'Stanly',  region:'APAC', gbp:true,  isLegacyQ1:false,
+    types:   ['hybrid','hybrid',null],
+    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},null],
+    actuals: [{demos:6, book:7283*G}, {demos:11,book:8783*G}, null],
+    pipe:    [{t:76810,a:27552},      null,                   null] },
+
+  { id:'ruzain',  name:'Ruzain',  region:'APAC', gbp:true,  isLegacyQ1:false,
+    types:   ['hybrid',null,null],
+    targets: [{demos:15,book:10000*G},null,null],
+    actuals: [{demos:9, book:3996*G}, null,null],
+    pipe:    [{t:76188,a:61391},      null,null] },
+];
+
+// Legacy box data
+// Aron/Ece: Feb+Mar legacy bookings. q1extra = their Jan SDR bookings (added in Q1 view)
+// Bernardo: Jan+Feb only
+const LEGACY = [
+  { name:'Aron',     book:[null, 61425, 840],  q1extra:9144  },  { name:'Ece',      book:[null, null,  4560], q1extra:20369 },
+  { name:'Bernardo', book:[3427, 7068,  null], q1extra:0     },
+  { name:'Ilian',    book:[null, null,  null], q1extra:0     },
+];
+
+let S = { month:2, region:'all' };
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmtE(v, full=false) {
+  if(v==null||v===0) return '–';
+  if(full) return '€'+Math.round(v).toLocaleString('en-GB');
+  if(v>=1e6) return '€'+(v/1e6).toFixed(1)+'M';
+  if(v>=1000) return '€'+Math.round(v/1000)+'k';
+  return '€'+Math.round(v);
+}
+function fmtG(v, full=false) {
+  if(v==null||v===0) return '–';
+  const g=v/G;
+  if(full) return '£'+Math.round(g).toLocaleString('en-GB');
+  if(g>=1000) return '£'+Math.round(g/1000)+'k';
+  return '£'+Math.round(g);
+}
+function ach(a,t){ return(!t||a==null)?null:a/t; }
+function pac(a,t,f){ return(!t||a==null||!f)?null:(a/t)/f; }
+function pctStr(v){ return v==null?'–':Math.round(v*100)+'%'; }
+function pCls(v){ return v==null?'muted':v>=1?'green':v>=.75?'amber':'red'; }
+function bClr(v){ return v==null?'#eef0f5':v>=1?'#0d9f6e':v>=.75?'#d97706':'#dc2626'; }
+function badgeCls(v){ return v==null?'blue':v>=1?'green':v>=.75?'amber':'red'; }
+
+function typeTag(ty, region) {
+  if(!ty||ty==='ramp') return '<span class="role-tag tag-ramp">Ramping</span>';
+  if(region==='APAC')  return '<span class="role-tag tag-apac">APAC · Hybrid</span>';
+  if(ty==='inbound')   return '<span class="role-tag tag-ib">Inbound</span>';
+  if(ty==='outbound')  return '<span class="role-tag tag-ob">Outbound</span>';
+  return '<span class="role-tag tag-hybrid">Hybrid</span>';
+}
+
+function weightedScore(rep, mIdx) {
+  if(mIdx===3) {
+    let dA=0,dT=0,bA=0,bT=0;
+    for(let i=0;i<3;i++){
+      const a=rep.actuals[i], t=rep.targets[i];
+      if(a&&a.demos!=null) dA+=a.demos;
+      if(t&&t.demos!=null) dT+=t.demos;
+      if(a&&a.book!=null)  bA+=a.book;
+      if(t&&t.book!=null)  bT+=t.book;
+    }
+    const da=ach(dA,dT), ba=ach(bA,bT);
+    if(!dT) return ba; if(!bT) return da;
+    return (da||0)*.75+(ba||0)*.25;
+  }
+  const t=rep.targets[mIdx], a=rep.actuals[mIdx];
+  if(!t||!a) return null;
+  const ba=ach(a.book,t.book);
+  const ty=rep.types[mIdx];
+  if(ty==='inbound'||t.demos==null) return ba;
+  const da=ach(a.demos,t.demos);
+  if(da==null&&ba==null) return null;
+  if(da==null) return ba; if(ba==null) return da;
+  return da*.75+ba*.25;
+}
+
+// ── METRIC BLOCKS ─────────────────────────────────────────────────────────────
+function metricBlock(label, actual, targetVal, achV, pacV, wdf, fmtFn) {
+  const fillW = Math.min((achV||0)*100, 100);
+  const pacMark = Math.min((wdf||0)*100, 100);
+  // Demos are always plain numbers, never currency
+  const isDemos = label==='Demos';
+  const actualStr = isDemos ? (actual!=null?String(actual):'0') : (fmtFn===fmtG ? fmtG(actual,true) : fmtE(actual,true));
+  const targetStr = isDemos ? (targetVal!=null?String(targetVal):'–') : (fmtFn===fmtG ? fmtG(targetVal) : fmtE(targetVal));
+  return `<div class="metric-row">
+    <div class="metric-label">${label}
+      <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${actualStr} <span style="color:var(--text3)">/ ${targetStr}</span></span>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-fill" style="width:${fillW}%;background:${bClr(achV)}"></div>
+      <div class="bar-marker" style="left:${pacMark}%"></div>
+    </div>
+    <div class="metric-pcts">
+      <div><div class="mpi-label">Achievement</div><div class="mpi-val ${pCls(achV)}">${pctStr(achV)}</div></div>
+      <div><div class="mpi-label">Pacing</div><div class="mpi-val ${pCls(pacV)}">${pctStr(pacV)}</div></div>
+    </div>
+  </div>`;
+}
+
+function demoNoTargetBlock(actual) {
+  return `<div class="metric-row">
+    <div class="metric-label">Demos <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">· no target</span></div>
+    <div style="font-size:15px;font-weight:700;margin-top:2px">${actual!=null?actual:0}</div>
+  </div>`;
+}
+
+function noTargetBlock(label) {
+  return `<div class="metric-row">
+    <div class="metric-label">${label}</div>
+    <div class="no-tgt-note">No target for this month</div>
+  </div>`;
+}
+
+function pipeBlock(p, wdf) {
+  if(!p||!p.t) return noTargetBlock('Pipeline (CM)');
+  const achV=ach(p.a,p.t), pacV=pac(p.a,p.t,wdf);
+  const fillW=Math.min((achV||0)*100,100), pacMark=Math.min((wdf||0)*100,100);
+  return `<div class="metric-row">
+    <div class="metric-label">Pipeline (CM)
+      <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtE(p.a)} <span style="color:var(--text3)">/ ${fmtE(p.t)}</span></span>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-fill" style="width:${fillW}%;background:${bClr(achV)}"></div>
+      <div class="bar-marker" style="left:${pacMark}%"></div>
+    </div>
+    <div class="metric-pcts">
+      <div><div class="mpi-label">Achievement</div><div class="mpi-val ${pCls(achV)}">${pctStr(achV)}</div></div>
+      <div><div class="mpi-label">Pacing</div><div class="mpi-val ${pCls(pacV)}">${pctStr(pacV)}</div></div>
+    </div>
+  </div>`;
+}
+
+// ── BUILD REP CARD ────────────────────────────────────────────────────────────
+function buildCard(rep, mIdx) {
+  const isQ1 = mIdx===3;
+  const ty = isQ1
+    ? (rep.types.find(t=>t&&t!=='ramp') || 'hybrid')
+    : rep.types[mIdx];
+  const fmtFn = rep.gbp ? fmtG : fmtE;
+  const ws = weightedScore(rep, mIdx);
+  const wbCls = ws==null?'wb-muted':ws>=1?'wb-green':ws>=.75?'wb-amber':'wb-red';
+  let body = '';
+
+  if(isQ1) {
+    let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0;
+    for(let i=0;i<3;i++){
+      const a=rep.actuals[i], t=rep.targets[i], p=rep.pipe[i];
+      if(a&&a.demos!=null) dA+=a.demos; if(t&&t.demos!=null) dT+=t.demos;
+      if(a&&a.book!=null)  bA+=a.book;  if(t&&t.book!=null)  bT+=t.book;
+      if(p&&p.t){ pT+=p.t; pA+=(p.a||0); }
+    }
+    const dAch=ach(dA,dT), bAch=ach(bA,bT);
+    if(dT>0) body+=metricBlock('Demos',dA,dT,dAch,null,null,fmtE);
+    else if(dA>0) body+=demoNoTargetBlock(dA);
+    body+=`<div class="metric-divider"></div>`;
+    if(bT>0) body+=metricBlock('Bookings',bA,bT,bAch,null,null,fmtFn);
+    else if(bA>0) {
+      const actualStr = rep.gbp ? fmtG(bA,true) : fmtE(bA,true);
+      body+=`<div class="metric-row"><div class="metric-label">Bookings <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">· no target</span></div><div style="font-size:15px;font-weight:700;margin-top:2px">${actualStr}</div></div>`;
+    }
+    body+=`<div class="metric-divider"></div>`;
+    if(pT>0){
+      const pAch=ach(pA,pT), fillW=Math.min((pAch||0)*100,100);
+      body+=`<div class="metric-row">
+        <div class="metric-label">Pipeline (CQ)
+          <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtE(pA)} <span style="color:var(--text3)">/ ${fmtE(pT)}</span></span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${fillW}%;background:${bClr(pAch)}"></div></div>
+        <div class="metric-pcts">
+          <div><div class="mpi-label">Q1 Achievement</div><div class="mpi-val ${pCls(pAch)}">${pctStr(pAch)}</div></div>
+        </div>
+      </div>`;
+    }
+  } else {
+    const t = rep.targets[mIdx];
+    const a = rep.actuals[mIdx];
+    const p = rep.pipe[mIdx];
+    const wdf = wdFrac(mIdx);
+
+    if(!a && !t) {
+      body = `<div class="inactive-note">Not active this month</div>`;
+    } else if(ty==='ramp') {
+      // Ramp: show demos (with target+bar if target exists, no-target otherwise)
+      const dT = t ? t.demos : null;
+      const dA = a ? a.demos : null;
+      const bT = t ? t.book  : null;
+      const bA = a ? a.book  : null;
+      if(dT!=null) {
+        body += metricBlock('Demos', dA, dT, ach(dA,dT), pac(dA,dT,wdf), wdf, fmtE);
+      } else {
+        body += demoNoTargetBlock(dA);
+      }
+      body += `<div class="metric-divider"></div>`;
+      if(bT!=null) {
+        body += metricBlock('Bookings', bA, bT, ach(bA,bT), pac(bA,bT,wdf), wdf, fmtFn);
+      } else {
+        body += noTargetBlock('Bookings');
+      }
+      body += `<div class="metric-divider"></div>`;
+      body += noTargetBlock('Pipeline (CM)');
+    } else {
+      const dT = t ? t.demos : null;
+      const dA = a ? a.demos : null;
+      const bT = t ? t.book  : null;
+      const bA = a ? a.book  : null;
+      if(dT!=null) body+=metricBlock('Demos',dA,dT,ach(dA,dT),pac(dA,dT,wdf),wdf,fmtE);
+      else if(dA!=null&&dA>0) body+=demoNoTargetBlock(dA);
+      body+=`<div class="metric-divider"></div>`;
+      if(bT!=null) body+=metricBlock('Bookings',bA,bT,ach(bA,bT),pac(bA,bT,wdf),wdf,fmtFn);
+      else if(bA!=null&&bA>0) {
+        const s = rep.gbp ? fmtG(bA,true) : fmtE(bA,true);
+        body+=`<div class="metric-row"><div class="metric-label">Bookings <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">· no target</span></div><div style="font-size:15px;font-weight:700;margin-top:2px">${s}</div></div>`;
+      }
+      body+=`<div class="metric-divider"></div>`;
+      body+=pipeBlock(p,wdf);
+    }
+  }
+
+  return `<div class="rep-card">
+    <div class="rep-card-header">
+      <div>
+        <div class="rep-name">${rep.name}</div>
+        <div class="rep-tags">${typeTag(ty, rep.region)}</div>
+      </div>
+      <div class="weighted-badge ${wbCls}">${ws!=null?Math.round(ws*100)+'%':'–'}</div>
+    </div>
+    <div class="rep-card-body">${body}</div>
+  </div>`;
+}
+
+// ── LEGACY BOX ────────────────────────────────────────────────────────────────
+function buildLegacyBox(mIdx, region) {
+  if(region==='apac') return '';
+  const isQ1 = mIdx===3;
+  const rows = LEGACY.map(l => {
+    const val = isQ1
+      ? l.book.reduce((s,v)=>s+(v||0),0) + (l.q1extra||0)
+      : (l.book[mIdx]||0);
+    return val>0 ? {name:l.name, val} : null;
+  }).filter(Boolean);
+  if(!rows.length) return '';
+  const total = rows.reduce((s,r)=>s+r.val, 0);
+  return `<div class="legacy-box">
+    <div class="legacy-box-title">Legacy SDR Bookings</div>
+    ${rows.map(r=>`<div class="legacy-row-item">
+      <span style="font-size:12px;color:var(--text2)">${r.name}</span>
+      <span style="font-size:12px;font-weight:600">${fmtE(r.val,true)}</span>
+    </div>`).join('')}
+    <div class="legacy-total-row">
+      <span class="legacy-total-label">${isQ1?'Q1 Total':'Total'}</span>
+      <span class="legacy-total-val">${fmtE(total,true)}</span>
+    </div>
+  </div>`;
+}
+
+// ── TEAM STRIP ────────────────────────────────────────────────────────────────
+function buildTeamStrip(mIdx, region) {
+  const regFilter = region==='all' ? ['EMEA','APAC'] : [region.toUpperCase()];
+  const range = mIdx===3 ? [0,1,2] : [mIdx];
+  let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0;
+
+  for(const r of REPS.filter(rep=>regFilter.includes(rep.region))) {
+    for(const i of range) {
+      const ty = r.types[i];
+      if(!ty) continue;
+      const a=r.actuals[i], t=r.targets[i], p=r.pipe[i];
+      // Always count actuals for all active reps including ramp
+      if(a&&a.demos!=null) dA+=a.demos;
+      if(a&&a.book!=null)  bA+=a.book;
+      // Only count targets for non-ramp reps (or ramp reps with explicit targets)
+      if(t&&t.demos!=null) dT+=t.demos;
+      if(t&&t.book!=null)  bT+=t.book;
+      if(ty!=='ramp'&&p&&p.t){ pT+=p.t; pA+=(p.a||0); }
+    }
+  }
+  // Add legacy bookings for EMEA (Feb/Mar only via book[], Jan via Aron/Ece rep cards)
+  if(regFilter.includes('EMEA')) {
+    for(const l of LEGACY) {
+      for(const i of range){ if(l.book[i]) bA+=l.book[i]; }
+      // q1extra = Aron/Ece Jan bookings — already counted via their rep cards, do NOT add again
+    }
+  }
+
+  const dPct=ach(dA,dT), bPct=ach(bA,bT), pPct=ach(pA,pT);
+  const ml = mIdx===3?'Q1':['Jan','Feb','Mar'][mIdx];
+  const card = (label,val,tgt,pct,lg=false) => `<div class="team-card">
+    <div class="tc-label">${label} · ${ml}</div>
+    <div class="tc-value" style="${lg?'font-size:18px':''}">${val}</div>
+    <div class="tc-target">of ${tgt} target</div>
+    ${pct!=null?`<span class="tc-badge ${badgeCls(pct)}">${Math.round(pct*100)}%</span>`:''}
+  </div>`;
+  return `<div class="team-strip">
+    ${card('Demos', dA, dT||'–', dPct)}
+    ${card('Bookings', fmtE(bA), fmtE(bT), bPct, true)}
+    ${card('Pipeline', fmtE(pA), fmtE(pT), pPct, true)}
+  </div>`;
+}
+
+// ── WORKING DAYS STATUS ───────────────────────────────────────────────────────
+function buildWdStatus() {
+  const today=new Date(), tm=today.getMonth(), td=today.getDate();
+  if(tm<0||tm>2){ document.getElementById('wd-status').textContent=''; return; }
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March'];
+  const sfx=td===1||td===21||td===31?'st':td===2||td===22?'nd':td===3||td===23?'rd':'th';
+  const passed=WD[tm].days.filter(d=>d<=td).length;
+  document.getElementById('wd-status').textContent=
+    `As of ${days[today.getDay()]} ${months[tm]} ${td}${sfx} we have completed ${passed} working day${passed!==1?'s':''} out of ${WD[tm].total} in the month`;
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+function render() {
+  const {month:mIdx, region} = S;
+  document.getElementById('team-strip').innerHTML = buildTeamStrip(mIdx, region);
+
+  const regFilter = region==='all' ? ['EMEA','APAC'] : [region.toUpperCase()];
+  let html = '';
+
+  for(const reg of regFilter) {
+    const visible = REPS.filter(r => {
+      if(r.region!==reg) return false;
+      // Aron/Ece: hide card in Q1 view entirely
+      if(r.isLegacyQ1 && mIdx===3) return false;
+      if(mIdx===3) {
+        // Show if active (non-ramp) in at least one month
+        return r.types.some(t=>t&&t!=='ramp');
+      }
+      const ty = r.types[mIdx];
+      if(!ty) return false;
+      // Show ramp reps only if they have actuals or a target this month
+      if(ty==='ramp') {
+        const a=r.actuals[mIdx], t=r.targets[mIdx];
+        const hasActuals = a && (a.demos>0 || (a.book!=null&&a.book>0));
+        const hasTarget  = t && (t.demos!=null || t.book!=null);
+        return hasActuals || hasTarget;
+      }
+      return true;
+    });
+
+    if(!visible.length) continue;
+    html += `<div class="region-heading">${reg}</div><div class="cards-grid">`;
+    for(const rep of visible) html += buildCard(rep, mIdx);
+    html += `</div>`;
+    html += buildLegacyBox(mIdx, reg.toLowerCase());
+  }
+  document.getElementById('cards-container').innerHTML = html;
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function setMonth(m,el){
+  S.month=m;
+  document.querySelectorAll('#month-pills .pill-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setRegion(r,el){
+  S.region=r;
+  document.querySelectorAll('#region-pills .pill-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+// ── MODAL & UPLOAD ────────────────────────────────────────────────────────────
+function openModal(){ document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal').classList.remove('open'); document.getElementById('upload-status').textContent=''; }
+
+async function handleUpload(input) {
+  const file=input.files[0]; if(!file) return;
+  const status=document.getElementById('upload-status');
+  status.textContent='⏳ Reading screenshot with Claude…';
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const b64=e.target.result.split(',')[1];
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
+          messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:file.type||'image/png',data:b64}},
+            {type:'text',text:`Read this Salesforce SDR dashboard screenshot. For each SDR rep extract:
+- name (first name only)
+- ob_demos: outbound demos held this month (integer, 0 if none)
+- ib_demos: inbound demos held this month (integer, 0 if none)
+- bookings: ARR CW bookings amount this month (number only, no currency symbol, null if not visible)
+- pipeline: pipeline generated this month (number only, null if not visible)
+Respond ONLY with a raw JSON array, no markdown, no explanation.
+Example: [{"name":"Loic","ob_demos":0,"ib_demos":5,"bookings":52130,"pipeline":545006}]`}
+          ]}]})
+      });
+      const data=await res.json();
+      const txt=data.content.filter(c=>c.type==='text').map(c=>c.text).join('').trim();
+      const parsed=JSON.parse(txt);
+      let updated=0;
+      for(const u of parsed){
+        const rep=REPS.find(r=>r.name.toLowerCase()===u.name.toLowerCase());
+        if(!rep) continue;
+        const mi=S.month===3?2:S.month;
+        if(!rep.actuals[mi]) rep.actuals[mi]={};
+        const a=rep.actuals[mi];
+        const td=(u.ob_demos||0)+(u.ib_demos||0);
+        if(td>0) a.demos=td;
+        if(u.bookings!=null) a.book=rep.gbp?u.bookings*G:u.bookings;
+        if(u.pipeline!=null&&rep.pipe[mi]) rep.pipe[mi].a=u.pipeline;
+        updated++;
+      }
+      status.textContent=`✓ Updated ${updated} rep${updated!==1?'s':''} successfully.`;
+      document.getElementById('lu-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      render();
+    } catch(err){
+      status.textContent='⚠ Could not parse screenshot. Please try again.';
+      console.error(err);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('lu-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+buildWdStatus();
+render();
+</script>
+</body>
+</html>
