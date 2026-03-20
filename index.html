@@ -123,37 +123,15 @@
         <button class="pill-btn" onclick="setRegion('emea',this)">EMEA</button>
         <button class="pill-btn" onclick="setRegion('apac',this)">APAC</button>
       </div>
-      <button class="update-btn" onclick="openModal()">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 10V3M5 6l3-3 3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>
-        Update from Salesforce
-      </button>
     </div>
   </div>
   <div id="team-strip"></div>
   <div id="cards-container"></div>
 </div>
 
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h2>Update from Salesforce</h2>
-    <p>Upload your Salesforce dashboard screenshot and Claude will read the numbers and update every rep's actuals for the selected month automatically.</p>
-    <div class="drop-zone" onclick="document.getElementById('upload-input').click()">
-      <div class="dz-icon">📊</div>
-      <div class="dz-main">Click to upload screenshot</div>
-      <div class="dz-sub">PNG or JPG · Select multiple charts at once</div>
-    </div>
-    <input type="file" id="upload-input" accept="image/*" multiple onchange="handleUpload(this)">
-    <div id="upload-status"></div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-confirm" onclick="closeModal()">Done</button>
-    </div>
-  </div>
-</div>
 
 <script>
-const G = 1.15;
-const API_KEY = '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'; // GBP→EUR
+const G = 1.15; // GBP→EUR
 
 const WD = {
   0:{total:22,days:[2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30]},
