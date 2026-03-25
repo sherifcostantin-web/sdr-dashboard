@@ -145,14 +145,14 @@ const REPS = [
   { id:'loic',    name:'Loic',    region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','inbound','inbound'],
     targets: [{demos:15,book:15000}, {demos:null,book:15000}, {demos:null,book:36000}],
-    actuals: [{demos:9, book:20877}, {demos:2,   book:36742}, {demos:5,   book:74978.30}],
-    pipe:    [{t:40051,a:87203},     {t:96122,a:300171},      {t:96122,a:610000}] },
+    actuals: [{demos:9, book:20877}, {demos:2,   book:36742}, {demos:5,   book:79422.30}],
+    pipe:    [{t:40051,a:87203},     {t:96122,a:300171},      {t:96122,a:722000}] },
 
   { id:'majd',    name:'Majd',    region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid','inbound'],
     targets: [{demos:15,book:15000}, {demos:15,book:15000},   {demos:null,book:15000}],
     actuals: [{demos:16,book:9878},  {demos:14,book:13995},   {demos:1,   book:16304.40}],
-    pipe:    [{t:107399,a:51742},    {t:107399,a:139072},     {t:107399,a:223000}] },
+    pipe:    [{t:107399,a:51742},    {t:107399,a:139072},     {t:107399,a:241000}] },
 
   { id:'yannis',  name:'Yannis',  region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','outbound','outbound'],
@@ -200,7 +200,7 @@ const REPS = [
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
     actuals: [{demos:14,book:6394*G}, {demos:16,book:4673*G}, {demos:13, book:6492*G}],
-    pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:106000*G}] },
+    pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:123000*G}] },
 
   { id:'stanly',  name:'Stanly',  region:'APAC', gbp:true,  isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
@@ -217,8 +217,8 @@ const REPS = [
 
 // Ece's bookings removed until deal closes
 const LEGACY = [
-  { name:'Aron',     book:[null, 61425, 840],  q1extra:9144 },
-  { name:'Ece',      book:[null, null,  null],  q1extra:0    },
+  { name:'Aron',     book:[null, 61425, 840],  q1extra:9144  },
+  { name:'Ece',      book:[null, null,  4560], q1extra:20369 },
   { name:'Bernardo', book:[3427, 7068,  null],  q1extra:0    },
   { name:'Ilian',    book:[null, null,  null],  q1extra:0    },
 ];
