@@ -246,38 +246,38 @@ const REPS = [
   { id:'colin', name:'Colin', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
     targets: [{demos:15,book:45000},{demos:15,book:45000},null],
-    actuals: [{demos:0,book:18996},{demos:0,book:14856},null],
-    pipe:    [null,null,null] },
+    actuals: [{demos:1,book:18996},{demos:3,book:14856},null],
+    pipe:    [{a:49459},{a:82316},null] },
 
   { id:'darya', name:'Darya', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
-    actuals: [{demos:0,book:7062.60},{demos:0,book:21152.50},{demos:0,book:19140}],
-    pipe:    [null,null,null] },
+    actuals: [{demos:7,book:7062.60},{demos:7,book:21152.50},{demos:2,book:19140}],
+    pipe:    [{a:53793},{a:62109},{a:44186}] },
 
   { id:'nickv', name:'Nick V', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
-    actuals: [{demos:0,book:54425.40},{demos:0,book:32195.28},{demos:0,book:22111.80}],
-    pipe:    [null,null,null] },
+    actuals: [{demos:0,book:54425.40},{demos:5,book:32195.28},{demos:2,book:22111.80}],
+    pipe:    [{a:263342},{a:56957},{a:74012}] },
 
   { id:'nickm', name:'Nick M', region:'AMER', usd:true, isLegacyQ1:false,
     types:   [null,'ramp','hybrid'],
     targets: [null,{demos:10,book:null},{demos:15,book:45000}],
-    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:3498}],
-    pipe:    [null,null,null] },
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:2,book:3498}],
+    pipe:    [null,{a:5310},{a:84991}] },
 
   { id:'gleice', name:'Gleice', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:15000}],
-    actuals: [{demos:0,book:3408},{demos:0,book:43813.80},{demos:0,book:29844}],
-    pipe:    [null,null,null] },
+    actuals: [{demos:3,book:3408},{demos:13,book:43813.80},{demos:12,book:29844}],
+    pipe:    [{a:118148},{a:107610},{a:306276}] },
 
   { id:'vini', name:'Vini', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
     targets: [{demos:15,book:15000},{demos:15,book:15000},null],
-    actuals: [{demos:0,book:41918.40},{demos:0,book:10908},null],
-    pipe:    [null,null,null] },
+    actuals: [{demos:10,book:41918.40},{demos:15,book:10908},null],
+    pipe:    [{a:85158},{a:68976},null] },
 ];
 
 const LEGACY = [
@@ -395,13 +395,24 @@ function noTargetBlock(label) {
   </div>`;
 }
 
-function pipeBlock(p, wdf) {
-  if(!p||!p.t) return noTargetBlock('Pipeline (CM)');
+function pipeBlock(p, wdf, fmtFn) {
+  fmtFn = fmtFn || fmtE;
+  if (!p) return noTargetBlock('Pipeline (CM)');
+  if (!p.t) {
+    if (p.a) {
+      return `<div class="metric-row">
+        <div class="metric-label">Pipeline (CM)
+          <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtFn(p.a)} <span style="color:var(--text3)">· No target</span></span>
+        </div>
+      </div>`;
+    }
+    return noTargetBlock('Pipeline (CM)');
+  }
   const achV=ach(p.a,p.t),pacV=pac(p.a,p.t,wdf);
   const fillW=Math.min((achV||0)*100,100),pacMark=Math.min((wdf||0)*100,100);
   return `<div class="metric-row">
     <div class="metric-label">Pipeline (CM)
-      <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtE(p.a)} <span style="color:var(--text3)">/ ${fmtE(p.t)}</span></span>
+      <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtFn(p.a)} <span style="color:var(--text3)">/ ${fmtFn(p.t)}</span></span>
     </div>
     <div class="bar-wrap">
       <div class="bar-fill" style="width:${fillW}%;background:${bClr(achV)}"></div>
@@ -423,12 +434,13 @@ function buildCard(rep, mIdx) {
   let body='';
 
   if(isQ1) {
-    let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0;
+    let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0,pAnt=0;
     for(let i=0;i<3;i++){
       const a=rep.actuals[i],t=rep.targets[i],p=rep.pipe[i];
       if(a&&a.demos!=null)dA+=a.demos; if(t&&t.demos!=null)dT+=t.demos;
       if(a&&a.book!=null) bA+=a.book;  if(t&&t.book!=null) bT+=t.book;
       if(p&&p.t){pT+=p.t;pA+=(p.a||0);}
+      else if(p&&p.a) pAnt+=(p.a||0);
     }
     const wdfQ1=wdFracQ1();
     const dAch=ach(dA,dT),bAch=ach(bA,bT);
@@ -446,11 +458,17 @@ function buildCard(rep, mIdx) {
       const pAch=ach(pA,pT),fillW=Math.min((pAch||0)*100,100);
       body+=`<div class="metric-row">
         <div class="metric-label">Pipeline (CQ)
-          <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtE(pA)} <span style="color:var(--text3)">/ ${fmtE(pT)}</span></span>
+          <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtFn(pA)} <span style="color:var(--text3)">/ ${fmtFn(pT)}</span></span>
         </div>
         <div class="bar-wrap"><div class="bar-fill" style="width:${fillW}%;background:${bClr(pAch)}"></div></div>
         <div class="metric-pcts">
           <div><div class="mpi-label">Q1 Achievement</div><div class="mpi-val ${pCls(pAch)}">${pctStr(pAch)}</div></div>
+        </div>
+      </div>`;
+    } else if(pAnt>0){
+      body+=`<div class="metric-row">
+        <div class="metric-label">Pipeline (CQ)
+          <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">${fmtFn(pAnt)} <span style="color:var(--text3)">· No target</span></span>
         </div>
       </div>`;
     }
@@ -481,7 +499,7 @@ function buildCard(rep, mIdx) {
         body+=`<div class="metric-row"><div class="metric-label">Bookings <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">· no target</span></div><div style="font-size:15px;font-weight:700;margin-top:2px">${s}</div></div>`;
       }
       body+=`<div class="metric-divider"></div>`;
-      body+=pipeBlock(p,wdf);
+      body+=pipeBlock(p,wdf,fmtFn);
     }
   }
 
@@ -551,7 +569,7 @@ function buildLegacyBox(mIdx, region) {
 function buildTeamStrip(mIdx, regFilter) {
   const useUSD=regFilter.some(r=>['AMER','LATAM'].includes(r));
   const range=mIdx===3?[0,1,2]:[mIdx];
-  let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0;
+  let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0,pAnt=0;
   for(const r of REPS.filter(rep=>regFilter.includes(rep.region))){
     for(const i of range){
       const ty=r.types[i]; if(!ty) continue;
@@ -562,6 +580,7 @@ function buildTeamStrip(mIdx, regFilter) {
       if(t&&t.demos!=null)dT+=t.demos;
       if(t&&t.book!=null) bT+=t.book*mult;
       if(ty!=='ramp'&&p&&p.t){pT+=p.t*mult;pA+=(p.a||0)*mult;}
+      else if(ty!=='ramp'&&p&&p.a) pAnt+=(p.a||0)*mult;
     }
   }
   if(regFilter.includes('EMEA')){
@@ -587,7 +606,8 @@ function buildTeamStrip(mIdx, regFilter) {
       if(mIdx===3)bA+=(l.q1extra||0)*umult;
     }
   }
-  const dPct=ach(dA,dT),bPct=ach(bA,bT),pPct=ach(pA,pT);
+  const pTotalA=pA+pAnt;
+  const dPct=ach(dA,dT),bPct=ach(bA,bT),pPct=pT>0?ach(pA,pT):null;
   const ml=mIdx===3?'Q1':['Jan','Feb','Mar'][mIdx];
   const fmt=useUSD?fmtU:fmtE;
   const card=(label,val,tgt,pct,lg=false)=>`<div class="team-card">
@@ -596,10 +616,19 @@ function buildTeamStrip(mIdx, regFilter) {
     <div class="tc-target">of ${tgt} target</div>
     ${pct!=null?`<span class="tc-badge ${badgeCls(pct)}">${Math.round(pct*100)}%</span>`:''}
   </div>`;
+  const pipeCard=`<div class="team-card">
+    <div class="tc-label">Pipeline · ${ml}</div>
+    <div class="tc-value" style="font-size:18px">${fmt(pTotalA)}</div>
+    ${pT>0
+      ? `<div class="tc-target">of ${fmt(pT)} target <span style="color:var(--text3);font-size:10px">(EMEA+APAC)</span></div>
+         <span class="tc-badge ${badgeCls(pPct)}">${Math.round(pPct*100)}%</span>`
+      : `<div class="tc-target" style="color:var(--text3)">No target</div>`
+    }
+  </div>`;
   return `<div class="team-strip">
     ${card('Demos',dA,dT||'–',dPct)}
     ${card('Bookings',fmt(bA),fmt(bT),bPct,true)}
-    ${card('Pipeline',fmt(pA),fmt(pT),pPct,true)}
+    ${pipeCard}
   </div>`;
 }
 
@@ -633,14 +662,440 @@ function setView(v, el) {
   if(isHistory) renderHistory();
 }
 
-function renderHistory() {
-  document.getElementById('history-container').innerHTML = `
-    <div class="history-placeholder">
-      <h2>📊 Historical Performance</h2>
-      <p>Monthly trend data from January 2024 will appear here.<br>
-      Share your Salesforce reports to populate this section.</p>
-    </div>`;
+// ── Historical data (Salesforce Analytics REST API, all values USD) ────────
+const HIST_BOOK = [
+  {m:"Jan'24",total:70278,r:9,AMER:47371,APAC:0,EMEA:22907,LATAM:0,ib:53943,ob:16335,AMER_ib:40998,AMER_ob:6373,APAC_ib:0,APAC_ob:0,EMEA_ib:12945,EMEA_ob:9962,LATAM_ib:0,LATAM_ob:0},
+  {m:"Feb'24",total:96327,r:10,AMER:53017,APAC:0,EMEA:43310,LATAM:0,ib:80213,ob:16114,AMER_ib:50908,AMER_ob:2109,APAC_ib:0,APAC_ob:0,EMEA_ib:29305,EMEA_ob:14005,LATAM_ib:0,LATAM_ob:0},
+  {m:"Mar'24",total:250430,r:10,AMER:148936,APAC:0,EMEA:101494,LATAM:0,ib:187037,ob:63393,AMER_ib:106484,AMER_ob:42452,APAC_ib:0,APAC_ob:0,EMEA_ib:80553,EMEA_ob:20941,LATAM_ib:0,LATAM_ob:0},
+  {m:"Apr'24",total:168270,r:12,AMER:65674,APAC:0,EMEA:99803,LATAM:0,ib:117401,ob:50869,AMER_ib:57126,AMER_ob:8548,APAC_ib:0,APAC_ob:0,EMEA_ib:57482,EMEA_ob:42320,LATAM_ib:0,LATAM_ob:0},
+  {m:"May'24",total:157777,r:14,AMER:65959,APAC:0,EMEA:81753,LATAM:7789,ib:98736,ob:59041,AMER_ib:19291,AMER_ob:46668,APAC_ib:0,APAC_ob:0,EMEA_ib:69380,EMEA_ob:12373,LATAM_ib:7789,LATAM_ob:0},
+  {m:"Jun'24",total:170041,r:17,AMER:51272,APAC:4195,EMEA:100119,LATAM:5954,ib:130860,ob:39180,AMER_ib:48852,AMER_ob:2420,APAC_ib:4195,APAC_ob:0,EMEA_ib:63359,EMEA_ob:36761,LATAM_ib:5954,LATAM_ob:0},
+  {m:"Jul'24",total:152914,r:17,AMER:39737,APAC:4754,EMEA:78150,LATAM:27479,ib:118512,ob:34402,AMER_ib:34940,AMER_ob:4797,APAC_ib:4754,APAC_ob:0,EMEA_ib:58494,EMEA_ob:19656,LATAM_ib:17530,LATAM_ob:9949},
+  {m:"Aug'24",total:105946,r:16,AMER:21606,APAC:5366,EMEA:57180,LATAM:21794,ib:78297,ob:27648,AMER_ib:19806,AMER_ob:1800,APAC_ib:5366,APAC_ob:0,EMEA_ib:35701,EMEA_ob:21478,LATAM_ib:17424,LATAM_ob:4370},
+  {m:"Sep'24",total:450201,r:16,AMER:173890,APAC:7930,EMEA:248749,LATAM:17232,ib:308641,ob:141559,AMER_ib:56908,AMER_ob:116982,APAC_ib:7930,APAC_ob:0,EMEA_ib:224172,EMEA_ob:24577,LATAM_ib:17232,LATAM_ob:0},
+  {m:"Oct'24",total:298399,r:13,AMER:167532,APAC:9964,EMEA:110643,LATAM:10260,ib:225540,ob:72859,AMER_ib:125452,AMER_ob:42079,APAC_ib:4824,APAC_ob:5140,EMEA_ib:86792,EMEA_ob:23851,LATAM_ib:8472,LATAM_ob:1788},
+  {m:"Nov'24",total:284743,r:18,AMER:75555,APAC:21727,EMEA:170742,LATAM:5856,ib:233797,ob:50946,AMER_ib:61735,AMER_ob:13820,APAC_ib:21727,APAC_ob:0,EMEA_ib:133616,EMEA_ob:37126,LATAM_ib:5856,LATAM_ob:0},
+  {m:"Dec'24",total:318688,r:18,AMER:154388,APAC:17737,EMEA:136776,LATAM:6304,ib:218015,ob:100673,AMER_ib:144508,AMER_ob:9880,APAC_ib:12436,APAC_ob:5301,EMEA_ib:53552,EMEA_ob:83224,LATAM_ib:4036,LATAM_ob:2268},
+  {m:"Jan'25",total:163017,r:12,AMER:46356,APAC:2834,EMEA:106855,LATAM:6972,ib:125611,ob:37405,AMER_ib:46356,AMER_ob:0,APAC_ib:2834,APAC_ob:0,EMEA_ib:74991,EMEA_ob:31864,LATAM_ib:1430,LATAM_ob:5542},
+  {m:"Feb'25",total:250095,r:12,AMER:31312,APAC:13674,EMEA:184701,LATAM:20409,ib:167682,ob:82413,AMER_ib:29524,AMER_ob:1788,APAC_ib:8926,APAC_ob:4748,EMEA_ib:108824,EMEA_ob:75877,LATAM_ib:20409,LATAM_ob:0},
+  {m:"Mar'25",total:355985,r:16,AMER:140528,APAC:9996,EMEA:160965,LATAM:44496,ib:273397,ob:82588,AMER_ib:126355,AMER_ob:14173,APAC_ib:8448,APAC_ob:1548,EMEA_ib:94098,EMEA_ob:66867,LATAM_ib:44496,LATAM_ob:0},
+  {m:"Apr'25",total:188775,r:16,AMER:20014,APAC:8960,EMEA:125369,LATAM:34432,ib:100388,ob:88387,AMER_ib:15718,AMER_ob:4296,APAC_ib:8960,APAC_ob:0,EMEA_ib:64320,EMEA_ob:61050,LATAM_ib:11391,LATAM_ob:23042},
+  {m:"May'25",total:194902,r:15,AMER:30118,APAC:2498,EMEA:141769,LATAM:20516,ib:122356,ob:72546,AMER_ib:23146,AMER_ob:6972,APAC_ib:2498,APAC_ob:0,EMEA_ib:86124,EMEA_ob:55645,LATAM_ib:10587,LATAM_ob:9929},
+  {m:"Jun'25",total:269721,r:15,AMER:103730,APAC:2234,EMEA:150627,LATAM:13130,ib:159764,ob:109958,AMER_ib:67232,AMER_ob:36498,APAC_ib:2234,APAC_ob:0,EMEA_ib:77167,EMEA_ob:73460,LATAM_ib:13130,LATAM_ob:0},
+  {m:"Jul'25",total:220209,r:14,AMER:47897,APAC:3084,EMEA:151395,LATAM:17832,ib:141121,ob:79088,AMER_ib:38306,AMER_ob:9591,APAC_ib:3084,APAC_ob:0,EMEA_ib:92135,EMEA_ob:59261,LATAM_ib:7596,LATAM_ob:10236},
+  {m:"Aug'25",total:244759,r:15,AMER:86033,APAC:11779,EMEA:131635,LATAM:15312,ib:173792,ob:70967,AMER_ib:86033,AMER_ob:0,APAC_ib:4334,APAC_ob:7445,EMEA_ib:70741,EMEA_ob:60894,LATAM_ib:12684,LATAM_ob:2628},
+  {m:"Sep'25",total:242123,r:15,AMER:31897,APAC:24713,EMEA:143012,LATAM:42502,ib:114915,ob:127209,AMER_ib:22700,AMER_ob:9197,APAC_ib:5161,APAC_ob:19551,EMEA_ib:70348,EMEA_ob:72664,LATAM_ib:16706,LATAM_ob:25796},
+  {m:"Oct'25",total:324262,r:14,AMER:206880,APAC:11999,EMEA:98135,LATAM:7248,ib:226101,ob:98161,AMER_ib:197246,AMER_ob:9633,APAC_ib:2240,APAC_ob:9759,EMEA_ib:19366,EMEA_ob:78769,LATAM_ib:7248,LATAM_ob:0},
+  {m:"Nov'25",total:225584,r:17,AMER:47563,APAC:44931,EMEA:93351,LATAM:39739,ib:153309,ob:72275,AMER_ib:38059,AMER_ob:9504,APAC_ib:16052,APAC_ob:28879,EMEA_ib:64725,EMEA_ob:28626,LATAM_ib:34473,LATAM_ob:5266},
+  {m:"Dec'25",total:194129,r:17,AMER:69016,APAC:24921,EMEA:95571,LATAM:4621,ib:132870,ob:61259,AMER_ib:54123,AMER_ob:14893,APAC_ib:16866,APAC_ob:8055,EMEA_ib:57260,EMEA_ob:38311,LATAM_ib:4621,LATAM_ob:0},
+  {m:"Jan'26",total:255554,r:15,AMER:78504,APAC:25228,EMEA:106496,LATAM:45326,ib:162970,ob:92584,AMER_ib:74217,AMER_ob:4287,APAC_ib:10498,APAC_ob:14730,EMEA_ib:62756,EMEA_ob:43740,LATAM_ib:15499,LATAM_ob:29827},
+  {m:"Feb'26",total:327844,r:16,AMER:69872,APAC:13307,EMEA:189944,LATAM:54722,ib:256926,ob:70918,AMER_ib:66767,AMER_ob:3104,APAC_ib:8064,APAC_ob:5243,EMEA_ib:149845,EMEA_ob:40099,LATAM_ib:32250,LATAM_ob:22472},
+  {m:"Mar'26",total:298583,r:13,AMER:71710,APAC:16803,EMEA:176398,LATAM:33672,ib:224683,ob:73900,AMER_ib:63543,AMER_ob:8167,APAC_ib:12615,APAC_ob:4188,EMEA_ib:116652,EMEA_ob:59746,LATAM_ib:31872,LATAM_ob:1800},
+];
+const HIST_PIPE = [
+  {m:"Jan'24",total:832136,r:10,AMER:62146,APAC:0,EMEA:401495,LATAM:0,ib:359137,ob:472999,AMER_ib:23209,AMER_ob:38937,APAC_ib:0,APAC_ob:0,EMEA_ib:114194,EMEA_ob:287301,LATAM_ib:0,LATAM_ob:0},
+  {m:"Feb'24",total:729327,r:11,AMER:102674,APAC:0,EMEA:361116,LATAM:0,ib:293352,ob:435975,AMER_ib:25797,AMER_ob:76878,APAC_ib:0,APAC_ob:0,EMEA_ib:159296,EMEA_ob:201820,LATAM_ib:0,LATAM_ob:0},
+  {m:"Mar'24",total:996220,r:14,AMER:80742,APAC:0,EMEA:619905,LATAM:0,ib:353817,ob:642404,AMER_ib:16767,AMER_ob:63974,APAC_ib:0,APAC_ob:0,EMEA_ib:238828,EMEA_ob:381078,LATAM_ib:0,LATAM_ob:0},
+  {m:"Apr'24",total:1228100,r:16,AMER:193137,APAC:0,EMEA:686461,LATAM:1800,ib:618500,ob:609600,AMER_ib:94141,AMER_ob:98996,APAC_ib:0,APAC_ob:0,EMEA_ib:352115,EMEA_ob:334346,LATAM_ib:1800,LATAM_ob:0},
+  {m:"May'24",total:1107868,r:16,AMER:187019,APAC:0,EMEA:608956,LATAM:59581,ib:599481,ob:508387,AMER_ib:83971,AMER_ob:103047,APAC_ib:0,APAC_ob:0,EMEA_ib:373017,EMEA_ob:235940,LATAM_ib:54385,LATAM_ob:5196},
+  {m:"Jun'24",total:969256,r:18,AMER:128873,APAC:50269,EMEA:498799,LATAM:62078,ib:522836,ob:446421,AMER_ib:50643,AMER_ob:78230,APAC_ib:32505,APAC_ob:17764,EMEA_ib:312151,EMEA_ob:186647,LATAM_ib:39746,LATAM_ob:22332},
+  {m:"Jul'24",total:1016974,r:17,AMER:175178,APAC:81020,EMEA:451475,LATAM:84098,ib:583785,ob:433190,AMER_ib:26190,AMER_ob:148988,APAC_ib:40922,APAC_ob:40099,EMEA_ib:351947,EMEA_ob:99528,LATAM_ib:57001,LATAM_ob:27097},
+  {m:"Aug'24",total:1313730,r:17,AMER:478423,APAC:149897,EMEA:400154,LATAM:111625,ib:951889,ob:361842,AMER_ib:432038,AMER_ob:46385,APAC_ib:80946,APAC_ob:68951,EMEA_ib:305773,EMEA_ob:94381,LATAM_ib:60455,LATAM_ob:51170},
+  {m:"Sep'24",total:1167056,r:19,AMER:77634,APAC:66329,EMEA:699446,LATAM:19590,ib:752306,ob:414750,AMER_ib:29768,AMER_ob:47866,APAC_ib:43587,APAC_ob:22742,EMEA_ib:502529,EMEA_ob:196917,LATAM_ib:14574,LATAM_ob:5016},
+  {m:"Oct'24",total:1175215,r:18,AMER:139040,APAC:94166,EMEA:638359,LATAM:69110,ib:659838,ob:515377,AMER_ib:111523,AMER_ob:27516,APAC_ib:35762,APAC_ob:58404,EMEA_ib:353577,EMEA_ob:284782,LATAM_ib:47377,LATAM_ob:21733},
+  {m:"Nov'24",total:1202015,r:17,AMER:262093,APAC:86487,EMEA:619822,LATAM:88090,ib:680931,ob:521084,AMER_ib:154880,AMER_ob:107212,APAC_ib:56444,APAC_ob:30043,EMEA_ib:320305,EMEA_ob:299517,LATAM_ib:8544,LATAM_ob:79546},
+  {m:"Dec'24",total:505604,r:15,AMER:116555,APAC:41562,EMEA:321198,LATAM:26289,ib:317849,ob:187755,AMER_ib:104683,AMER_ob:11872,APAC_ib:22051,APAC_ob:19511,EMEA_ib:180683,EMEA_ob:140515,LATAM_ib:10432,LATAM_ob:15857},
+  {m:"Jan'25",total:1002765,r:15,AMER:216750,APAC:61185,EMEA:641821,LATAM:83008,ib:548394,ob:454371,AMER_ib:212334,AMER_ob:4416,APAC_ib:26019,APAC_ob:35166,EMEA_ib:267761,EMEA_ob:374061,LATAM_ib:42280,LATAM_ob:40728},
+  {m:"Feb'25",total:1161712,r:15,AMER:168703,APAC:107727,EMEA:731428,LATAM:153854,ib:674987,ob:486725,AMER_ib:145723,AMER_ob:22980,APAC_ib:49799,APAC_ob:57928,EMEA_ib:391635,EMEA_ob:339793,LATAM_ib:87830,LATAM_ob:66024},
+  {m:"Mar'25",total:1206760,r:17,AMER:166712,APAC:82121,EMEA:838676,LATAM:119251,ib:656157,ob:550603,AMER_ib:153740,AMER_ob:12972,APAC_ib:30224,APAC_ob:51896,EMEA_ib:415871,EMEA_ob:422805,LATAM_ib:56321,LATAM_ob:62930},
+  {m:"Apr'25",total:743745,r:18,AMER:127357,APAC:63397,EMEA:360636,LATAM:192355,ib:327611,ob:416135,AMER_ib:96937,AMER_ob:30420,APAC_ib:16877,APAC_ob:46520,EMEA_ib:142300,EMEA_ob:218336,LATAM_ib:71496,LATAM_ob:120859},
+  {m:"May'25",total:740467,r:16,AMER:124600,APAC:64913,EMEA:421632,LATAM:129322,ib:292802,ob:447664,AMER_ib:56134,AMER_ob:68466,APAC_ib:24827,APAC_ob:40086,EMEA_ib:150428,EMEA_ob:271204,LATAM_ib:61414,LATAM_ob:67908},
+  {m:"Jun'25",total:973676,r:19,AMER:137953,APAC:51046,EMEA:630918,LATAM:153758,ib:406895,ob:566780,AMER_ib:76615,AMER_ob:61338,APAC_ib:17891,APAC_ob:33156,EMEA_ib:236776,EMEA_ob:394142,LATAM_ib:75613,LATAM_ob:78145},
+  {m:"Jul'25",total:1036852,r:16,AMER:214484,APAC:56931,EMEA:613673,LATAM:151765,ib:413243,ob:623609,AMER_ib:79892,AMER_ob:134592,APAC_ib:13756,APAC_ob:43175,EMEA_ib:232635,EMEA_ob:381038,LATAM_ib:86960,LATAM_ob:64805},
+  {m:"Aug'25",total:1027751,r:15,AMER:174168,APAC:178856,EMEA:548362,LATAM:126366,ib:430810,ob:596942,AMER_ib:150864,AMER_ob:23303,APAC_ib:23753,APAC_ob:155104,EMEA_ib:187435,EMEA_ob:360927,LATAM_ib:68758,LATAM_ob:57608},
+  {m:"Sep'25",total:1323169,r:16,AMER:274771,APAC:160882,EMEA:730163,LATAM:157353,ib:511386,ob:811783,AMER_ib:221703,AMER_ob:53069,APAC_ib:50816,APAC_ob:110066,EMEA_ib:176334,EMEA_ob:553828,LATAM_ib:62534,LATAM_ob:94820},
+  {m:"Oct'25",total:1172709,r:17,AMER:323874,APAC:236451,EMEA:487187,LATAM:125198,ib:544764,ob:627946,AMER_ib:275301,AMER_ob:48573,APAC_ib:44703,APAC_ob:191748,EMEA_ib:173775,EMEA_ob:313412,LATAM_ib:50985,LATAM_ob:74213},
+  {m:"Nov'25",total:1308726,r:18,AMER:209315,APAC:135524,EMEA:817136,LATAM:146751,ib:767752,ob:540973,AMER_ib:165958,AMER_ob:43357,APAC_ib:36098,APAC_ob:99426,EMEA_ib:457355,EMEA_ob:359781,LATAM_ib:108342,LATAM_ob:38409},
+  {m:"Dec'25",total:1054190,r:16,AMER:192563,APAC:152652,EMEA:610410,LATAM:98564,ib:540490,ob:513700,AMER_ib:172649,AMER_ob:19914,APAC_ib:63906,APAC_ob:88746,EMEA_ib:249299,EMEA_ob:361111,LATAM_ib:54636,LATAM_ob:43928},
+  {m:"Jan'26",total:1536333,r:16,AMER:366594,APAC:157839,EMEA:808594,LATAM:203306,ib:1148613,ob:387720,AMER_ib:360390,AMER_ob:6204,APAC_ib:56156,APAC_ob:101682,EMEA_ib:595238,EMEA_ob:213356,LATAM_ib:136829,LATAM_ob:66478},
+  {m:"Feb'26",total:1299021,r:15,AMER:274636,APAC:92509,EMEA:755290,LATAM:176586,ib:802978,ob:496043,AMER_ib:233071,AMER_ob:41566,APAC_ib:58448,APAC_ob:34061,EMEA_ib:461084,EMEA_ob:294207,LATAM_ib:50376,LATAM_ob:126210},
+  {m:"Mar'26",total:2118626,r:13,AMER:222633,APAC:212953,EMEA:1376763,LATAM:306276,ib:1623287,ob:495338,AMER_ib:167847,AMER_ob:54787,APAC_ib:124910,APAC_ob:88043,EMEA_ib:1191489,EMEA_ob:185274,LATAM_ib:139041,LATAM_ob:167234},
+];
+
+// ── Historical filter state ────────────────────────────────────────────────
+let histMetric    = 'bookings'; // bookings | pipeline
+let histRegion    = 'all';      // all | AMER | APAC | EMEA | LATAM
+let histSource    = 'all';      // all | ib | ob
+let histDateMode  = 'all';      // all | 2024 | 2025 | 2026 | custom
+let histDateStart = 0;
+let histDateEnd   = 26;
+let histView      = 'total';    // total | perrep
+let histShowAvg   = true;       // running average line visible
+let histShowVals  = false;      // data labels on bars
+let histChart     = null;
+
+const HIST_ALL_MONTHS = [
+  "Jan'24","Feb'24","Mar'24","Apr'24","May'24","Jun'24",
+  "Jul'24","Aug'24","Sep'24","Oct'24","Nov'24","Dec'24",
+  "Jan'25","Feb'25","Mar'25","Apr'25","May'25","Jun'25",
+  "Jul'25","Aug'25","Sep'25","Oct'25","Nov'25","Dec'25",
+  "Jan'26","Feb'26","Mar'26"
+];
+
+function getRawHistVal(d) {
+  const r = histRegion, s = histSource;
+  if (r === 'all') { return s === 'all' ? d.total : (d[s] || 0); }
+  return s === 'all' ? (d[r] || 0) : (d[r + '_' + s] || 0);
 }
+
+function getHistVal(d) {
+  const raw = getRawHistVal(d);
+  return histView === 'perrep' ? (d.r > 0 ? Math.round(raw / d.r) : 0) : raw;
+}
+
+function getHistData(rawData) {
+  let s = 0, e = rawData.length - 1;
+  if      (histDateMode === '2024')   { s = 0;  e = Math.min(11, e); }
+  else if (histDateMode === '2025')   { s = 12; e = Math.min(23, e); }
+  else if (histDateMode === '2026')   { s = 24; }
+  else if (histDateMode === 'custom') { s = histDateStart; e = Math.min(histDateEnd, rawData.length - 1); }
+  return rawData.slice(s, e + 1);
+}
+
+function fmtHistVal(v) {
+  if (v >= 1e6) return '$' + (v/1e6).toFixed(2) + 'M';
+  if (v >= 1000) return '$' + Math.round(v/1000) + 'k';
+  return '$' + Math.round(v);
+}
+
+function renderHistChart() {
+  const rawData  = histMetric === 'bookings' ? HIST_BOOK : HIST_PIPE;
+  const data     = getHistData(rawData);
+  const labels   = data.map(d => d.m);
+  const vals     = data.map(d => getHistVal(d));
+  const isPR     = histView === 'perrep';
+  const yLabel   = isPR ? 'USD per SDR' : 'USD';
+  const barColor = isPR ? 'rgba(124,58,237,0.18)' : 'rgba(67,97,238,0.18)';
+  const barBorder= isPR ? 'rgba(124,58,237,0.7)'  : 'rgba(67,97,238,0.7)';
+  const lblColor = isPR ? 'rgba(124,58,237,0.85)' : 'rgba(67,97,238,0.85)';
+  let cumSum = 0;
+  const runningAvg = vals.map((v, i) => { cumSum += v; return Math.round(cumSum / (i + 1)); });
+
+  const datasets = [
+    {
+      type: 'bar',
+      label: isPR ? 'Per SDR (USD)' : 'Total (USD)',
+      data: vals,
+      backgroundColor: barColor,
+      borderColor: barBorder,
+      borderWidth: 1.5,
+      borderRadius: 4,
+      order: 2,
+    }
+  ];
+  if (histShowAvg) {
+    datasets.push({
+      type: 'line',
+      label: 'Running Avg',
+      data: runningAvg,
+      borderColor: '#0d9f6e',
+      backgroundColor: 'rgba(13,159,110,0.08)',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      tension: 0.35,
+      fill: false,
+      order: 1,
+    });
+  }
+
+  // Inline plugin: draw value labels on bars using canvas API (no external lib needed)
+  const barLabelsPlugin = {
+    id: 'barLabels',
+    afterDatasetsDraw(chart) {
+      if (!histShowVals) return;
+      const {ctx: c, data} = chart;
+      const meta = chart.getDatasetMeta(0);
+      if (!meta || !meta.data) return;
+      c.save();
+      c.font = '600 9px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      c.textAlign = 'center';
+      c.textBaseline = 'bottom';
+      c.fillStyle = lblColor;
+      meta.data.forEach((bar, i) => {
+        const val = data.datasets[0].data[i];
+        if (!val) return;
+        c.fillText(fmtHistVal(val), bar.x, bar.y - 3);
+      });
+      c.restore();
+    }
+  };
+
+  const canvasCtx = document.getElementById('hist-chart').getContext('2d');
+  if (histChart) histChart.destroy();
+  histChart = new Chart(canvasCtx, {
+    type: 'bar',
+    plugins: [barLabelsPlugin],
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      layout: { padding: { top: histShowVals ? 22 : 4 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `  ${ctx.dataset.label}: ${fmtHistVal(ctx.raw)}` } },
+      },
+      scales: {
+        x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10},color:'#a0a8c0',maxRotation:45} },
+        y: { position:'left', grid:{color:'rgba(0,0,0,0.04)'},
+             ticks:{font:{size:10},color:'#6b7494',callback:v=>fmtHistVal(v)},
+             title:{display:true,text:yLabel,font:{size:10},color:'#6b7494'} }
+      }
+    }
+  });
+}
+
+function histRefresh() { updateHistStats(); renderHistChart(); }
+
+function setHistMetric(m, el) {
+  histMetric = m;
+  document.querySelectorAll('.hist-metric-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  histRefresh();
+}
+
+function setHistRegion(r, el) {
+  histRegion = r;
+  document.querySelectorAll('#hist-region-pills .pill-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  histRefresh();
+}
+
+function setHistSource(s, el) {
+  histSource = s;
+  document.querySelectorAll('#hist-source-pills .pill-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  histRefresh();
+}
+
+function setHistView(v, el) {
+  histView = v;
+  document.querySelectorAll('#hist-view-pills .pill-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  histRefresh();
+}
+
+function toggleHistAvg(el) {
+  histShowAvg = !histShowAvg;
+  el.classList.toggle('active', histShowAvg);
+  renderHistChart();
+}
+
+function toggleHistVals(el) {
+  histShowVals = !histShowVals;
+  el.classList.toggle('active', histShowVals);
+  renderHistChart();
+}
+
+function setHistDate(mode) {
+  histDateMode = mode;
+  const customEl = document.getElementById('hist-custom-dates');
+  if (customEl) customEl.style.display = mode === 'custom' ? 'flex' : 'none';
+  if (mode !== 'custom') histRefresh();
+}
+
+function setHistCustomRange() {
+  const sEl = document.getElementById('hist-date-start');
+  const eEl = document.getElementById('hist-date-end');
+  let sv = parseInt(sEl.value), ev = parseInt(eEl.value);
+  if (ev < sv) { eEl.value = sv; ev = sv; }
+  histDateStart = sv; histDateEnd = ev;
+  histRefresh();
+}
+
+function updateHistStats() {
+  const rawData = histMetric === 'bookings' ? HIST_BOOK : HIST_PIPE;
+  const data  = getHistData(rawData);
+  const vals  = data.map(d => getHistVal(d));
+  const total = vals.reduce((a, b) => a + b, 0);
+  const monthlyAvg = Math.round(total / vals.length);
+  const maxIdx = vals.indexOf(Math.max(...vals));
+  const label  = histMetric === 'bookings' ? 'Bookings' : 'Pipeline';
+  document.querySelectorAll('.hist-metric-label').forEach(el => el.textContent = label);
+  document.getElementById('hist-stat-total').textContent     = fmtHistVal(total);
+  document.getElementById('hist-stat-total-sub').textContent = data.length + ' months · ' + data[0].m + ' – ' + data[data.length-1].m;
+  document.getElementById('hist-stat-avg').textContent       = fmtHistVal(monthlyAvg);
+  document.getElementById('hist-stat-best').textContent      = fmtHistVal(vals[maxIdx]);
+  document.getElementById('hist-stat-best-sub').textContent  = data[maxIdx].m;
+  // Trend
+  const trendEl    = document.getElementById('hist-stat-trend');
+  const trendSubEl = document.getElementById('hist-stat-trend-sub');
+  if (vals.length >= 6) {
+    const last3 = vals.slice(-3).reduce((a,b)=>a+b,0)/3;
+    const prev3 = vals.slice(-6,-3).reduce((a,b)=>a+b,0)/3;
+    if (prev3 > 0) {
+      const pct = Math.round(((last3 - prev3) / prev3) * 100);
+      trendEl.innerHTML    = `<span style="color:${pct>=0?'var(--green)':'var(--red)'}">${pct>=0?'+':''}${pct}%</span>`;
+      trendSubEl.textContent = 'Last 3mo vs prior 3mo';
+    } else { trendEl.textContent = '–'; trendSubEl.textContent = 'Prior period is zero'; }
+  } else { trendEl.textContent = '–'; trendSubEl.textContent = 'Need 6+ months'; }
+  // Ib/Ob split
+  const splitEl    = document.getElementById('hist-stat-split');
+  const splitSubEl = document.getElementById('hist-stat-split-sub');
+  if (histSource === 'all') {
+    const ibT = data.map(d => histRegion==='all' ? d.ib : (d[histRegion+'_ib']||0)).reduce((a,b)=>a+b,0);
+    const obT = data.map(d => histRegion==='all' ? d.ob : (d[histRegion+'_ob']||0)).reduce((a,b)=>a+b,0);
+    const tot = ibT + obT;
+    if (tot > 0) {
+      splitEl.textContent    = Math.round(ibT/tot*100) + '% Ib  ·  ' + Math.round(obT/tot*100) + '% Ob';
+      splitSubEl.textContent = fmtHistVal(ibT) + ' vs ' + fmtHistVal(obT);
+    } else { splitEl.textContent = '–'; splitSubEl.textContent = '–'; }
+  } else {
+    splitEl.textContent    = histSource === 'ib' ? 'Inbound only' : 'Outbound only';
+    splitSubEl.textContent = fmtHistVal(total) + ' filtered total';
+  }
+}
+
+function syncHistFilterUI() {
+  document.querySelectorAll('.hist-metric-btn').forEach(b => {
+    const isBook = b.textContent === 'Bookings';
+    b.classList.toggle('active', (isBook && histMetric==='bookings') || (!isBook && histMetric==='pipeline'));
+  });
+  document.querySelectorAll('#hist-region-pills .pill-btn').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('data-hr') === histRegion));
+  document.querySelectorAll('#hist-source-pills .pill-btn').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('data-hs') === histSource));
+  document.querySelectorAll('#hist-view-pills .pill-btn').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('data-hv') === histView));
+  const avgBtn = document.getElementById('hist-avg-toggle');
+  if (avgBtn) avgBtn.classList.toggle('active', histShowAvg);
+  const valBtn = document.getElementById('hist-val-toggle');
+  if (valBtn) valBtn.classList.toggle('active', histShowVals);
+  const ds = document.getElementById('hist-date-select');
+  if (ds) ds.value = histDateMode;
+  const ce = document.getElementById('hist-custom-dates');
+  if (ce) {
+    ce.style.display = histDateMode === 'custom' ? 'flex' : 'none';
+    document.getElementById('hist-date-start').value = histDateStart;
+    document.getElementById('hist-date-end').value   = histDateEnd;
+  }
+}
+
+function renderHistory() {
+  const ss = 'background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--text);font-family:inherit;cursor:pointer;outline:none;';
+  const mopts = HIST_ALL_MONTHS.map((m,i) => `<option value="${i}">${m}</option>`).join('');
+  document.getElementById('history-container').innerHTML = `
+    <div style="padding:0 0 32px">
+      <div class="hist-header">
+        <div>
+          <div class="hist-title">Historical Performance</div>
+          <div class="hist-sub">Jan 2024 – Present · All values in USD · Source: Salesforce Analytics API</div>
+        </div>
+        <div class="pill-group">
+          <button class="pill-btn hist-metric-btn" onclick="setHistMetric('bookings',this)">Bookings</button>
+          <button class="pill-btn hist-metric-btn" onclick="setHistMetric('pipeline',this)">Pipeline</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow-sm);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">Period</span>
+          <select id="hist-date-select" onchange="setHistDate(this.value)" style="${ss}">
+            <option value="all">All Time</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="custom">Custom Range</option>
+          </select>
+        </div>
+        <div id="hist-custom-dates" style="display:none;align-items:center;gap:6px;">
+          <span style="font-size:11px;color:var(--text3)">From</span>
+          <select id="hist-date-start" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
+          <span style="font-size:11px;color:var(--text3)">to</span>
+          <select id="hist-date-end" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
+        </div>
+        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--text2);">Region</span>
+          <div class="pill-group" id="hist-region-pills">
+            <button class="pill-btn" data-hr="all"  onclick="setHistRegion('all',this)">All</button>
+            <button class="pill-btn" data-hr="AMER" onclick="setHistRegion('AMER',this)">AMER</button>
+            <button class="pill-btn" data-hr="APAC" onclick="setHistRegion('APAC',this)">APAC</button>
+            <button class="pill-btn" data-hr="EMEA" onclick="setHistRegion('EMEA',this)">EMEA</button>
+            <button class="pill-btn" data-hr="LATAM" onclick="setHistRegion('LATAM',this)">LATAM</button>
+          </div>
+        </div>
+        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--text2);">Source</span>
+          <div class="pill-group" id="hist-source-pills">
+            <button class="pill-btn" data-hs="all" onclick="setHistSource('all',this)">All Sources</button>
+            <button class="pill-btn" data-hs="ib"  onclick="setHistSource('ib',this)">Inbound</button>
+            <button class="pill-btn" data-hs="ob"  onclick="setHistSource('ob',this)">Outbound</button>
+          </div>
+        </div>
+        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--text2);">View</span>
+          <div class="pill-group" id="hist-view-pills">
+            <button class="pill-btn" data-hv="total"  onclick="setHistView('total',this)">Total</button>
+            <button class="pill-btn" data-hv="perrep" onclick="setHistView('perrep',this)">Per SDR</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hist-stats-grid">
+        <div class="hist-stat">
+          <div class="hist-stat-label">Total <span class="hist-metric-label">Bookings</span></div>
+          <div class="hist-stat-val" id="hist-stat-total">–</div>
+          <div class="hist-stat-sub" id="hist-stat-total-sub">–</div>
+        </div>
+        <div class="hist-stat">
+          <div class="hist-stat-label">Monthly Avg</div>
+          <div class="hist-stat-val" id="hist-stat-avg">–</div>
+          <div class="hist-stat-sub">Per month in range</div>
+        </div>
+        <div class="hist-stat">
+          <div class="hist-stat-label">Best Month</div>
+          <div class="hist-stat-val" id="hist-stat-best">–</div>
+          <div class="hist-stat-sub" id="hist-stat-best-sub">–</div>
+        </div>
+        <div class="hist-stat">
+          <div class="hist-stat-label">Recent Trend</div>
+          <div class="hist-stat-val" id="hist-stat-trend">–</div>
+          <div class="hist-stat-sub" id="hist-stat-trend-sub">Last 3mo vs prior 3mo</div>
+        </div>
+        <div class="hist-stat">
+          <div class="hist-stat-label">Ib / Ob Split</div>
+          <div class="hist-stat-val" style="font-size:14px;line-height:1.5" id="hist-stat-split">–</div>
+          <div class="hist-stat-sub" id="hist-stat-split-sub">–</div>
+        </div>
+      </div>
+
+      <div class="hist-chart-wrap">
+        <div class="hist-chart-label">
+          <span>Monthly trend</span>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="hist-legend">
+              <span><span class="hist-legend-dot" style="background:rgba(67,97,238,0.5)"></span>Total</span>
+              <span><span class="hist-legend-dot" style="background:rgba(124,58,237,0.5)"></span>Per SDR</span>
+              <span><span class="hist-legend-dot" style="background:#0d9f6e;border-radius:50%"></span>Running Avg</span>
+            </div>
+            <div style="display:flex;gap:5px;">
+              <button id="hist-avg-toggle" onclick="toggleHistAvg(this)" class="pill-btn active" style="font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);">Running avg</button>
+              <button id="hist-val-toggle" onclick="toggleHistVals(this)" class="pill-btn" style="font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);">Show values</button>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;height:320px"><canvas id="hist-chart"></canvas></div>
+        <div class="hist-note">Bars = monthly values · Green line = running average up to that point · A bar above the line = above-avg month at the time · Toggle "Per SDR" to normalise for headcount changes.</div>
+      </div>
+    </div>`;
+  syncHistFilterUI();
+  updateHistStats();
+  renderHistChart();
+}
+
 
 function render() {
   const {month:mIdx}=S;
