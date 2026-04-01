@@ -3,59 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDR Team Dashboard – Q1 2026</title>
+<title>SDR Performance Dashboard – 2026</title>
 <style>
   :root {
-    --bg:#f0f2f7;--bg2:#ffffff;--border:#e2e5ef;--border2:#c8cde0;
-    --text:#1a1d2e;--text2:#6b7494;--text3:#a0a8c0;
-    --blue:#4361ee;--blue-light:#eef0fd;
+    --bg:#FAF8F4;--bg2:#ffffff;--border:#EDE8DF;--border2:#D9D2C7;
+    --text:#1E2B3A;--text2:#6B7060;--text3:#A8A39A;
+    --blue:#F47C20;--blue-light:#FEF0E4;
     --green:#0d9f6e;--green-light:#e6f7f2;
     --amber:#d97706;--amber-light:#fef3e2;
     --red:#dc2626;--red-light:#fef2f2;
-    --purple:#7c3aed;--purple-light:#f3f0ff;
-    --teal:#0891b2;--teal-light:#ecfeff;
+    --purple:#2B7B7B;--purple-light:#E6F4F4;
+    --teal:#2B7B7B;--teal-light:#E6F4F4;
     --rose:#e11d48;--rose-light:#fff1f2;
     --lime:#65a30d;--lime-light:#f7fee7;
-    --radius:14px;--shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
-    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --radius:14px;--shadow:0 1px 4px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.07);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;}
-  .page{max-width:1320px;margin:0 auto;padding:24px 20px;}
-  .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
-  .header h1{font-size:20px;font-weight:700;}
-  .header-sub{font-size:12px;color:var(--text2);margin-top:3px;}
-  .wd-status{font-size:11px;color:var(--text3);margin-top:3px;}
-  .header-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;}
+  .lh-topbar{background:#F47C20;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+  .lh-topbar-logo{height:26px;width:auto;display:block;}
+  .lh-topbar-title{color:#fff;font-size:17px;font-weight:600;letter-spacing:-.01em;flex:1;text-align:center;}
+  .lh-topbar-right{width:160px;}
+  .page{max-width:1320px;margin:0 auto;padding:20px 20px;}
+  .header{display:flex;flex-direction:column;margin-bottom:20px;gap:12px;}
+  .header h1{font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .header-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .wd-status{font-size:11px;color:var(--text3);margin-top:2px;}
+  .header-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;width:100%;justify-content:space-between;}
   .pill-group{display:flex;background:#fff;border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px;box-shadow:var(--shadow-sm);}
-  .pill-btn{padding:5px 14px;border-radius:999px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .pill-btn.active{background:var(--blue);color:#fff;}
+  .pill-btn{padding:5px 14px;border-radius:999px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;}
+  .pill-btn.active{background:#F47C20;color:#fff;}
   .pill-btn:hover:not(.active){color:var(--text);background:var(--bg);}
-  .team-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+  .team-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
   .team-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);}
-  .tc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;}
+  .tc-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;}
   .tc-value{font-size:22px;font-weight:700;line-height:1;}
   .tc-target{font-size:11px;color:var(--text2);margin-top:4px;}
   .tc-badge{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-top:8px;}
   .tc-badge.green{background:var(--green-light);color:var(--green);}
   .tc-badge.amber{background:var(--amber-light);color:var(--amber);}
   .tc-badge.red{background:var(--red-light);color:var(--red);}
-  .tc-badge.blue{background:var(--blue-light);color:var(--blue);}
-  .region-heading{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin:28px 0 14px;display:flex;align-items:center;gap:10px;}
+  .tc-badge.blue{background:#FEF0E4;color:#F47C20;}
+  .region-heading{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#F47C20;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
   .region-heading::after{content:'';flex:1;height:1px;background:var(--border);}
-  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
   .rep-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
   .rep-card-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .rep-name{font-size:14px;font-weight:700;}
+  .rep-name{font-size:14px;font-weight:600;letter-spacing:-.01em;}
   .rep-tags{display:flex;gap:5px;margin-top:3px;}
   .role-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;}
-  .tag-ob{background:var(--teal-light);color:var(--teal);}
-  .tag-ib{background:var(--purple-light);color:var(--purple);}
-  .tag-apac{background:var(--amber-light);color:var(--amber);}
-  .tag-amer{background:var(--rose-light);color:var(--rose);}
-  .tag-latam{background:var(--lime-light);color:var(--lime);}
-  .tag-ramp{background:#f1f2f6;color:var(--text2);}
-  .tag-hybrid{background:var(--blue-light);color:var(--blue);}
+  .tag-ob{background:#E6F4F4;color:#2B7B7B;}
+  .tag-ib{background:#FEF0E4;color:#C96210;}
+  .tag-apac{background:#FEF0E4;color:#C96210;}
+  .tag-amer{background:#fff1f2;color:#e11d48;}
+  .tag-latam{background:#f7fee7;color:#65a30d;}
+  .tag-ramp{background:#F5F2EE;color:var(--text2);}
+  .tag-hybrid{background:#FEF0E4;color:#C96210;}
   .weighted-badge{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
   .wb-green{background:var(--green-light);color:var(--green);}
   .wb-amber{background:var(--amber-light);color:var(--amber);}
@@ -96,22 +100,33 @@
   .hist-note{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;}
   @media(max-width:640px){.cards-grid{grid-template-columns:1fr;}.team-strip{grid-template-columns:1fr;}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
+<div class="lh-topbar">
+  <img class="lh-topbar-logo" src="data:image/png;base64,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" alt="Lighthouse" />
+  <span class="lh-topbar-title">Global Lighthouse SDR Performance</span>
+  <div class="lh-topbar-right"></div>
+</div>
 <div class="page">
   <div class="header">
     <div>
-      <h1>SDR Performance Dashboard</h1>
-      <div class="header-sub">EMEA · APAC · AMER · LATAM · Q1 2026 · Updated <span id="lu-date"></span></div>
+      <h1>Global Lighthouse SDR Performance</h1>
+      <div class="header-sub">EMEA · APAC · AMER · LATAM · <span id="qtr-label">Q2 2026</span> · Updated <span id="lu-date"></span></div>
       <div class="wd-status" id="wd-status"></div>
     </div>
     <div class="header-controls">
+      <div class="pill-group" id="quarter-pills">
+        <button class="pill-btn" onclick="setQuarter(1,this)">Q1 2026</button>
+        <button class="pill-btn active" onclick="setQuarter(2,this)">Q2 2026</button>
+      </div>
       <div class="pill-group" id="month-pills">
-        <button class="pill-btn" onclick="setMonth(0,this)">Jan</button>
-        <button class="pill-btn" onclick="setMonth(1,this)">Feb</button>
-        <button class="pill-btn active" onclick="setMonth(2,this)">Mar</button>
-        <button class="pill-btn" onclick="setMonth(3,this)">Q1</button>
+        <button class="pill-btn active" onclick="setMonth(0,this)">Apr</button>
+        <button class="pill-btn" onclick="setMonth(1,this)">May</button>
+        <button class="pill-btn" onclick="setMonth(2,this)">Jun</button>
+        <button class="pill-btn" onclick="setMonth(3,this)">Q2</button>
       </div>
       <div class="pill-group" id="region-pills">
         <button class="pill-btn active" data-region="global" onclick="setRegion('global',this)">Global</button>
@@ -135,59 +150,90 @@
 const G = 1.15;
 const EUR_USD = 1.15;
 
-const WD = {
+// ── Q1 2026 config (Jan=0, Feb=1, Mar=2) ───────────────────────────────────
+const Q1_WD = {
   0:{total:22,days:[2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30]},
   1:{total:20,days:[2,3,4,5,6,9,10,11,12,13,16,17,18,19,20,23,24,25,26,27]},
   2:{total:22,days:[2,3,4,5,6,9,10,11,12,13,16,17,18,19,20,23,24,25,26,27,30,31]}
 };
-const WD_Q1_TOTAL = WD[0].total + WD[1].total + WD[2].total; // 22+20+22 = 64
+const Q1_WD_TOTAL    = 64;
+const Q1_DEMO_ADJ    = [0, 0, 15];
+const Q1_QSM         = 0;  // January
+const Q1_MONTHS_DISP = ['Jan','Feb','Mar'];
 
-// Team-level demo target adjustment per month (e.g. Majd's March target counted at team level only)
-const TEAM_DEMO_ADJ = [0, 0, 15];
+// ── Q2 2026 config (Apr=0, May=1, Jun=2) ───────────────────────────────────
+const Q2_WD = {
+  0:{total:22,days:[1,2,3,6,7,8,9,10,13,14,15,16,17,20,21,22,23,24,27,28,29,30]},
+  1:{total:21,days:[1,4,5,6,7,8,11,12,13,14,15,18,19,20,21,22,25,26,27,28,29]},
+  2:{total:22,days:[1,2,3,4,5,8,9,10,11,12,15,16,17,18,19,22,23,24,25,26,29,30]}
+};
+const Q2_WD_TOTAL    = 65;
+const Q2_DEMO_ADJ    = [0, 0, 0];
+const Q2_QSM         = 3;  // April
+const Q2_MONTHS_DISP = ['Apr','May','Jun'];
+
+// ── Mutable active-quarter state (initialised to Q2) ───────────────────────
+let WD                  = Q2_WD;
+let WD_Q_TOTAL          = Q2_WD_TOTAL;
+let TEAM_DEMO_ADJ       = Q2_DEMO_ADJ;
+let QUARTER_START_MONTH = Q2_QSM;
+let QUARTER_MONTHS      = Q2_MONTHS_DISP;
+let QUARTER_LABEL       = 'Q2';
+let ACTIVE_QUARTER      = 2;
 
 function wdFrac(m) {
   const t=new Date(), tm=t.getMonth(), td=t.getDate();
-  if(tm>m) return 1;
-  if(tm<m) return 0;
+  const actualM=QUARTER_START_MONTH+m;
+  if(tm>actualM) return 1;
+  if(tm<actualM) return 0;
   return WD[m].days.filter(d=>d<=td).length / WD[m].total;
 }
 
-function wdFracQ1() {
+function wdFracQ() {
   const today=new Date(), tm=today.getMonth(), td=today.getDate();
-  if(tm>2) return 1;
+  if(tm>QUARTER_START_MONTH+2) return 1;
   let passed=0;
-  for(let m=0; m<Math.min(tm,3); m++) passed+=WD[m].total;
-  if(tm<=2) passed+=WD[tm].days.filter(d=>d<=td).length;
-  return passed / WD_Q1_TOTAL;
+  for(let m=0;m<3;m++){
+    const am=QUARTER_START_MONTH+m;
+    if(tm>am) passed+=WD[m].total;
+    else if(tm===am){passed+=WD[m].days.filter(d=>d<=td).length;break;}
+    else break;
+  }
+  return passed/WD_Q_TOTAL;
 }
 
-function wdPassedQ1() {
+function wdPassedQ() {
   const today=new Date(), tm=today.getMonth(), td=today.getDate();
-  if(tm>2) return WD_Q1_TOTAL;
+  if(tm>QUARTER_START_MONTH+2) return WD_Q_TOTAL;
   let passed=0;
-  for(let m=0; m<Math.min(tm,3); m++) passed+=WD[m].total;
-  if(tm<=2) passed+=WD[tm].days.filter(d=>d<=td).length;
+  for(let m=0;m<3;m++){
+    const am=QUARTER_START_MONTH+m;
+    if(tm>am) passed+=WD[m].total;
+    else if(tm===am){passed+=WD[m].days.filter(d=>d<=td).length;break;}
+    else break;
+  }
   return passed;
 }
 
-const REPS = [
+// ── Q1 2026 REPS — arrays are [Jan, Feb, Mar] — FINAL CLOSED NUMBERS ────────
+const Q1_REPS = [
   { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','inbound','inbound'],
     targets: [{demos:15,book:15000},{demos:null,book:15000},{demos:null,book:36000}],
-    actuals: [{demos:9, book:20877},{demos:2,   book:36742},{demos:6,   book:86390}],
-    pipe:    [{t:40051,a:87203},    {t:96122,a:300171},    {t:96122,a:785000}] },
+    actuals: [{demos:9, book:20877},{demos:2,   book:36742},{demos:6,   book:91743}],
+    pipe:    [{t:40051,a:87203},    {t:96122,a:300171},    {t:96122,a:736000}] },
 
   { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid','inbound'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:null,book:15000}],
-    actuals: [{demos:16,book:9878}, {demos:14,book:13995},{demos:0,   book:16304.40}],
-    pipe:    [{t:107399,a:51742},   {t:107399,a:139072},  {t:107399,a:296000}] },
+    actuals: [{demos:16,book:9878}, {demos:14,book:13995},{demos:0,   book:27253}],
+    pipe:    [{t:107399,a:51742},   {t:107399,a:139072},  {t:107399,a:301000}] },
 
   { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','outbound','outbound'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:8000}],
-    actuals: [{demos:16,book:9142}, {demos:17,book:21173},{demos:15,book:9548.10}],
-    pipe:    [{t:69917,a:87873},    {t:40000,a:100124},   {t:40000,a:43000}] },
+    actuals: [{demos:16,book:9142}, {demos:17,book:21173},{demos:15,book:22396}],
+    pipe:    [{t:69917,a:87873},    {t:40000,a:100124},   {t:40000,a:46000}] },
 
   { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','outbound',null],
@@ -198,7 +244,7 @@ const REPS = [
   { id:'viola', name:'Viola', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['ramp','ramp','outbound'],
     targets: [null,{demos:10,book:null},{demos:15,book:8000}],
-    actuals: [{demos:3,book:null},  {demos:8,book:3600},  {demos:21,book:10836}],
+    actuals: [{demos:3,book:null},  {demos:8,book:3600},  {demos:21,book:10831}],
     pipe:    [null,{t:40000,a:43154},{t:40000,a:80000}] },
 
   { id:'aron', name:'Aron', region:'EMEA', gbp:false, isLegacyQ1:true,
@@ -217,19 +263,19 @@ const REPS = [
     types:   ['ramp','ramp','ramp'],
     targets: [null,null,null],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [null,null,{t:null,a:8400}] },
+    pipe:    [null,null,{t:null,a:3600}] },
 
   { id:'valeria', name:'Valeria', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['ramp','ramp','ramp'],
     targets: [null,null,null],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [null,null,{t:null,a:7200}] },
+    pipe:    [null,null,{t:null,a:14000}] },
 
   { id:'khye', name:'Khye', region:'APAC', gbp:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
-    actuals: [{demos:14,book:6394*G}, {demos:16,book:4673*G}, {demos:16,book:11298.90*G}],
-    pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:137000*G}] },
+    actuals: [{demos:14,book:6394*G}, {demos:16,book:4673*G}, {demos:16,book:12706*G}],
+    pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:157550}] },
 
   { id:'stanly', name:'Stanly', region:'APAC', gbp:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
@@ -270,7 +316,7 @@ const REPS = [
   { id:'gleice', name:'Gleice', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:15000}],
-    actuals: [{demos:3,book:3408},{demos:13,book:43813.80},{demos:12,book:29844}],
+    actuals: [{demos:3,book:3408},{demos:13,book:43813.80},{demos:12,book:52154.40}],
     pipe:    [{a:118148},{a:107610},{a:306276}] },
 
   { id:'vini', name:'Vini', region:'LATAM', usd:true, isLegacyQ1:false,
@@ -280,22 +326,146 @@ const REPS = [
     pipe:    [{a:85158},{a:68976},null] },
 ];
 
-const LEGACY = [
+// ── Q2 2026 REPS — arrays are [Apr, May, Jun] ────────────────────────────
+const Q2_REPS = [
+  { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['inbound','inbound','inbound'],
+    targets: [{demos:null,book:36000},{demos:null,book:36000},{demos:null,book:36000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:96122,a:0},{t:96122,a:0},{t:96122,a:0}] },
+
+  { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['inbound','inbound','inbound'],
+    targets: [{demos:null,book:15000},{demos:null,book:15000},{demos:null,book:15000}],
+    actuals: [{demos:0,book:12409},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:107399,a:2000},{t:107399,a:0},{t:107399,a:0}] },
+
+  { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['outbound','outbound','outbound'],
+    targets: [{demos:15,book:8000},{demos:15,book:8000},{demos:15,book:8000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:40000,a:0},{t:40000,a:0},{t:40000,a:0}] },
+
+  { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'viola', name:'Viola', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['outbound','outbound','outbound'],
+    targets: [{demos:15,book:8000},{demos:15,book:8000},{demos:15,book:8000}],
+    actuals: [{demos:1,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:40000,a:0},{t:40000,a:0},{t:40000,a:0}] },
+
+  { id:'aron', name:'Aron', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'ece', name:'Ece', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  // Isa: ramp April → full hybrid from May
+  { id:'isa', name:'Isa', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['ramp','hybrid','hybrid'],
+    targets: [{demos:10,book:null},{demos:15,book:15000},{demos:15,book:15000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:null,a:13043},null,null] },
+
+  // Valeria: same ramp → full ramp-up as Isa
+  { id:'valeria', name:'Valeria', region:'EMEA', gbp:false, isLegacyQ1:false,
+    types:   ['ramp','hybrid','hybrid'],
+    targets: [{demos:10,book:null},{demos:15,book:15000},{demos:15,book:15000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'khye', name:'Khye', region:'APAC', gbp:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:66708,a:5899*G},{t:66708,a:0},{t:66708,a:0}] },
+
+  { id:'stanly', name:'Stanly', region:'APAC', gbp:true, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:true, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'colin', name:'Colin', region:'AMER', usd:true, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+
+  { id:'darya', name:'Darya', region:'AMER', usd:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:0},{a:0},{a:0}] },
+
+  { id:'nickv', name:'Nick V', region:'AMER', usd:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:0},{a:0},{a:0}] },
+
+  { id:'nickm', name:'Nick M', region:'AMER', usd:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:0},{a:0},{a:0}] },
+
+  { id:'gleice', name:'Gleice', region:'LATAM', usd:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:15000}],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:0},{a:0},{a:0}] },
+
+  { id:'vini', name:'Vini', region:'LATAM', usd:true, isLegacyQ1:false,
+    types:   [null,null,null],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [null,null,null] },
+];
+
+// ── Q1 legacy bookings ────────────────────────────────────────────────────
+const Q1_LEGACY = [
   { name:'Aron',     book:[null,  61425, 840],  q1extra:9144  },
-  { name:'Ece',      book:[null,  null,  4560], q1extra:20369 },
+  { name:'Ece',      book:[null,  null,  4558], q1extra:20369 },
   { name:'Bernardo', book:[3427,  7068,  null], q1extra:0     },
   { name:'Ilian',    book:[null,  null,  null], q1extra:0     },
 ];
+const Q1_LEGACY_AMER  = [{ name:'Colin', book:[null,null,26959.80], q1extra:0 }];
+const Q1_LEGACY_LATAM = [{ name:'Vini',  book:[null,null,26376],    q1extra:0 }];
 
-const LEGACY_AMER = [
-  { name:'Colin', book:[null,null,26959.80], q1extra:0 },
-];
+// Seth List (AMER manager) — Q1 March pipeline only
+const Q1_MANAGER_PIPE = { AMER: [null, null, 8050] };
 
-const LEGACY_LATAM = [
-  { name:'Vini', book:[null,null,3828], q1extra:0 },
-];
+// ── Q2 legacy bookings (empty — fresh quarter) ────────────────────────────
+const Q2_LEGACY       = [];
+const Q2_LEGACY_AMER  = [];
+const Q2_LEGACY_LATAM = [];
+const Q2_MANAGER_PIPE = { AMER: [null, null, null] };
 
-let S = { month:2 };
+// ── Mutable active REPS/legacy pointers (start on Q2) ─────────────────────
+let REPS         = Q2_REPS;
+let LEGACY       = Q2_LEGACY;
+let LEGACY_AMER  = Q2_LEGACY_AMER;
+let LEGACY_LATAM = Q2_LEGACY_LATAM;
+let MANAGER_PIPE = Q2_MANAGER_PIPE;
+
+let S = { month:0 };
 let ACTIVE_REGIONS = new Set(['EMEA','APAC','AMER','LATAM']);
 let VIEW = 'live';
 
@@ -442,7 +612,7 @@ function buildCard(rep, mIdx) {
       if(p&&p.t){pT+=p.t;pA+=(p.a||0);}
       else if(p&&p.a) pAnt+=(p.a||0);
     }
-    const wdfQ1=wdFracQ1();
+    const wdfQ1=wdFracQ();
     const dAch=ach(dA,dT),bAch=ach(bA,bT);
     const dPac=pac(dA,dT,wdfQ1),bPac=pac(bA,bT,wdfQ1);
     if(dT>0) body+=metricBlock('Demos',dA,dT,dAch,dPac,wdfQ1,fmtE);
@@ -462,7 +632,7 @@ function buildCard(rep, mIdx) {
         </div>
         <div class="bar-wrap"><div class="bar-fill" style="width:${fillW}%;background:${bClr(pAch)}"></div></div>
         <div class="metric-pcts">
-          <div><div class="mpi-label">Q1 Achievement</div><div class="mpi-val ${pCls(pAch)}">${pctStr(pAch)}</div></div>
+          <div><div class="mpi-label">${QUARTER_LABEL} Achievement</div><div class="mpi-val ${pCls(pAch)}">${pctStr(pAch)}</div></div>
         </div>
       </div>`;
     } else if(pAnt>0){
@@ -529,7 +699,7 @@ function buildLegacyBox(mIdx, region) {
       html+=`<div class="legacy-box">
         <div class="legacy-box-title">Legacy SDR Bookings · EMEA</div>
         ${rows.map(r=>`<div class="legacy-row-item"><span style="font-size:12px;color:var(--text2)">${r.name}</span><span style="font-size:12px;font-weight:600">${fmtE(r.val,true)}</span></div>`).join('')}
-        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?'Q1 Total':'Total'}</span><span class="legacy-total-val">${fmtE(total,true)}</span></div>
+        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?QUARTER_LABEL+' Total':'Total'}</span><span class="legacy-total-val">${fmtE(total,true)}</span></div>
       </div>`;
     }
   }
@@ -544,7 +714,7 @@ function buildLegacyBox(mIdx, region) {
       html+=`<div class="legacy-box">
         <div class="legacy-box-title">Legacy SDR Bookings · AMER</div>
         ${rows.map(r=>`<div class="legacy-row-item"><span style="font-size:12px;color:var(--text2)">${r.name}</span><span style="font-size:12px;font-weight:600">${fmtU(r.val,true)}</span></div>`).join('')}
-        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?'Q1 Total':'Total'}</span><span class="legacy-total-val">${fmtU(total,true)}</span></div>
+        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?QUARTER_LABEL+' Total':'Total'}</span><span class="legacy-total-val">${fmtU(total,true)}</span></div>
       </div>`;
     }
   }
@@ -559,7 +729,7 @@ function buildLegacyBox(mIdx, region) {
       html+=`<div class="legacy-box">
         <div class="legacy-box-title">Legacy SDR Bookings · LATAM</div>
         ${rows.map(r=>`<div class="legacy-row-item"><span style="font-size:12px;color:var(--text2)">${r.name}</span><span style="font-size:12px;font-weight:600">${fmtU(r.val,true)}</span></div>`).join('')}
-        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?'Q1 Total':'Total'}</span><span class="legacy-total-val">${fmtU(total,true)}</span></div>
+        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?QUARTER_LABEL+' Total':'Total'}</span><span class="legacy-total-val">${fmtU(total,true)}</span></div>
       </div>`;
     }
   }
@@ -606,9 +776,14 @@ function buildTeamStrip(mIdx, regFilter) {
       if(mIdx===3)bA+=(l.q1extra||0)*umult;
     }
   }
+  // Manager pipeline contributions (stored in region's native currency)
+  for(const [mgReg,mpArr] of Object.entries(MANAGER_PIPE)){
+    if(!regFilter.includes(mgReg)) continue;
+    for(const i of range){const mp=mpArr[i];if(mp)pAnt+=mp;}
+  }
   const pTotalA=pA+pAnt;
   const dPct=ach(dA,dT),bPct=ach(bA,bT),pPct=pT>0?ach(pA,pT):null;
-  const ml=mIdx===3?'Q1':['Jan','Feb','Mar'][mIdx];
+  const ml=mIdx===3?QUARTER_LABEL:QUARTER_MONTHS[mIdx];
   const fmt=useUSD?fmtU:fmtE;
   const card=(label,val,tgt,pct,lg=false)=>`<div class="team-card">
     <div class="tc-label">${label} · ${ml}</div>
@@ -635,17 +810,20 @@ function buildTeamStrip(mIdx, regFilter) {
 function buildWdStatus() {
   const today=new Date(),tm=today.getMonth(),td=today.getDate();
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months=['January','February','March'];
+  const qMonths=['April','May','June'];
   const sfx=td===1||td===21||td===31?'st':td===2||td===22?'nd':td===3||td===23?'rd':'th';
   const el=document.getElementById('wd-status');
   if(S.month===3){
-    const passed=wdPassedQ1();
-    const mLabel=tm<=2?months[tm]:'March';
-    el.textContent=`As of ${days[today.getDay()]} ${mLabel} ${td}${sfx} we have completed ${passed} working days out of ${WD_Q1_TOTAL} in the quarter`;
+    const passed=wdPassedQ();
+    const relM=tm-QUARTER_START_MONTH;
+    const mLabel=relM>=0&&relM<=2?qMonths[relM]:'June';
+    el.textContent=`As of ${days[today.getDay()]} ${mLabel} ${td}${sfx} we have completed ${passed} working days out of ${WD_Q_TOTAL} in the quarter`;
   } else {
-    if(tm<0||tm>2){el.textContent='';return;}
-    const passed=WD[tm].days.filter(d=>d<=td).length;
-    el.textContent=`As of ${days[today.getDay()]} ${months[tm]} ${td}${sfx} we have completed ${passed} working day${passed!==1?'s':''} out of ${WD[tm].total} in the month`;
+    const relM=tm-QUARTER_START_MONTH;
+    if(relM<0||relM>2){el.textContent='';return;}
+    const m=relM;
+    const passed=WD[m].days.filter(d=>d<=td).length;
+    el.textContent=`As of ${days[today.getDay()]} ${qMonths[m]} ${td}${sfx} we have completed ${passed} working day${passed!==1?'s':''} out of ${WD[m].total} in the month`;
   }
 }
 
@@ -654,6 +832,7 @@ function setView(v, el) {
   document.querySelectorAll('#view-pills .pill-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   const isHistory = v === 'history';
+  document.getElementById('quarter-pills').style.visibility = isHistory ? 'hidden' : '';
   document.getElementById('month-pills').style.display = isHistory ? 'none' : '';
   document.getElementById('region-pills').style.display = isHistory ? 'none' : '';
   document.getElementById('team-strip').style.display = isHistory ? 'none' : '';
@@ -662,68 +841,100 @@ function setView(v, el) {
   if(isHistory) renderHistory();
 }
 
+function updateMonthPills() {
+  const c = document.getElementById('month-pills');
+  if (!c) return;
+  c.innerHTML = QUARTER_MONTHS.map((m, i) =>
+    `<button class="pill-btn${S.month===i?' active':''}" onclick="setMonth(${i},this)">${m}</button>`
+  ).join('') + `<button class="pill-btn${S.month===3?' active':''}" onclick="setMonth(3,this)">${QUARTER_LABEL}</button>`;
+}
+
+function setQuarter(q, el) {
+  ACTIVE_QUARTER = q;
+  if (q === 1) {
+    WD = Q1_WD; WD_Q_TOTAL = Q1_WD_TOTAL; TEAM_DEMO_ADJ = Q1_DEMO_ADJ;
+    QUARTER_START_MONTH = Q1_QSM; QUARTER_MONTHS = Q1_MONTHS_DISP; QUARTER_LABEL = 'Q1';
+    REPS = Q1_REPS; LEGACY = Q1_LEGACY; LEGACY_AMER = Q1_LEGACY_AMER;
+    LEGACY_LATAM = Q1_LEGACY_LATAM; MANAGER_PIPE = Q1_MANAGER_PIPE;
+    S.month = 3; // default to Q1 aggregate for closed quarter
+  } else {
+    WD = Q2_WD; WD_Q_TOTAL = Q2_WD_TOTAL; TEAM_DEMO_ADJ = Q2_DEMO_ADJ;
+    QUARTER_START_MONTH = Q2_QSM; QUARTER_MONTHS = Q2_MONTHS_DISP; QUARTER_LABEL = 'Q2';
+    REPS = Q2_REPS; LEGACY = Q2_LEGACY; LEGACY_AMER = Q2_LEGACY_AMER;
+    LEGACY_LATAM = Q2_LEGACY_LATAM; MANAGER_PIPE = Q2_MANAGER_PIPE;
+    S.month = 0; // default to April
+  }
+  document.querySelectorAll('#quarter-pills .pill-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const ql = document.getElementById('qtr-label');
+  if (ql) ql.textContent = QUARTER_LABEL + ' 2026';
+  updateMonthPills();
+  buildWdStatus();
+  render();
+}
+
 // ── Historical data (Salesforce Analytics REST API, all values USD) ────────
 const HIST_BOOK = [
-  {m:"Jan'24",total:70278,r:9,AMER:47371,APAC:0,EMEA:22907,LATAM:0,ib:53943,ob:16335,AMER_ib:40998,AMER_ob:6373,APAC_ib:0,APAC_ob:0,EMEA_ib:12945,EMEA_ob:9962,LATAM_ib:0,LATAM_ob:0},
-  {m:"Feb'24",total:96327,r:10,AMER:53017,APAC:0,EMEA:43310,LATAM:0,ib:80213,ob:16114,AMER_ib:50908,AMER_ob:2109,APAC_ib:0,APAC_ob:0,EMEA_ib:29305,EMEA_ob:14005,LATAM_ib:0,LATAM_ob:0},
-  {m:"Mar'24",total:250430,r:10,AMER:148936,APAC:0,EMEA:101494,LATAM:0,ib:187037,ob:63393,AMER_ib:106484,AMER_ob:42452,APAC_ib:0,APAC_ob:0,EMEA_ib:80553,EMEA_ob:20941,LATAM_ib:0,LATAM_ob:0},
-  {m:"Apr'24",total:168270,r:12,AMER:65674,APAC:0,EMEA:99803,LATAM:0,ib:117401,ob:50869,AMER_ib:57126,AMER_ob:8548,APAC_ib:0,APAC_ob:0,EMEA_ib:57482,EMEA_ob:42320,LATAM_ib:0,LATAM_ob:0},
-  {m:"May'24",total:157777,r:14,AMER:65959,APAC:0,EMEA:81753,LATAM:7789,ib:98736,ob:59041,AMER_ib:19291,AMER_ob:46668,APAC_ib:0,APAC_ob:0,EMEA_ib:69380,EMEA_ob:12373,LATAM_ib:7789,LATAM_ob:0},
-  {m:"Jun'24",total:170041,r:17,AMER:51272,APAC:4195,EMEA:100119,LATAM:5954,ib:130860,ob:39180,AMER_ib:48852,AMER_ob:2420,APAC_ib:4195,APAC_ob:0,EMEA_ib:63359,EMEA_ob:36761,LATAM_ib:5954,LATAM_ob:0},
-  {m:"Jul'24",total:152914,r:17,AMER:39737,APAC:4754,EMEA:78150,LATAM:27479,ib:118512,ob:34402,AMER_ib:34940,AMER_ob:4797,APAC_ib:4754,APAC_ob:0,EMEA_ib:58494,EMEA_ob:19656,LATAM_ib:17530,LATAM_ob:9949},
-  {m:"Aug'24",total:105946,r:16,AMER:21606,APAC:5366,EMEA:57180,LATAM:21794,ib:78297,ob:27648,AMER_ib:19806,AMER_ob:1800,APAC_ib:5366,APAC_ob:0,EMEA_ib:35701,EMEA_ob:21478,LATAM_ib:17424,LATAM_ob:4370},
-  {m:"Sep'24",total:450201,r:16,AMER:173890,APAC:7930,EMEA:248749,LATAM:17232,ib:308641,ob:141559,AMER_ib:56908,AMER_ob:116982,APAC_ib:7930,APAC_ob:0,EMEA_ib:224172,EMEA_ob:24577,LATAM_ib:17232,LATAM_ob:0},
-  {m:"Oct'24",total:298399,r:13,AMER:167532,APAC:9964,EMEA:110643,LATAM:10260,ib:225540,ob:72859,AMER_ib:125452,AMER_ob:42079,APAC_ib:4824,APAC_ob:5140,EMEA_ib:86792,EMEA_ob:23851,LATAM_ib:8472,LATAM_ob:1788},
-  {m:"Nov'24",total:284743,r:18,AMER:75555,APAC:21727,EMEA:170742,LATAM:5856,ib:233797,ob:50946,AMER_ib:61735,AMER_ob:13820,APAC_ib:21727,APAC_ob:0,EMEA_ib:133616,EMEA_ob:37126,LATAM_ib:5856,LATAM_ob:0},
-  {m:"Dec'24",total:318688,r:18,AMER:154388,APAC:17737,EMEA:136776,LATAM:6304,ib:218015,ob:100673,AMER_ib:144508,AMER_ob:9880,APAC_ib:12436,APAC_ob:5301,EMEA_ib:53552,EMEA_ob:83224,LATAM_ib:4036,LATAM_ob:2268},
-  {m:"Jan'25",total:163017,r:12,AMER:46356,APAC:2834,EMEA:106855,LATAM:6972,ib:125611,ob:37405,AMER_ib:46356,AMER_ob:0,APAC_ib:2834,APAC_ob:0,EMEA_ib:74991,EMEA_ob:31864,LATAM_ib:1430,LATAM_ob:5542},
-  {m:"Feb'25",total:250095,r:12,AMER:31312,APAC:13674,EMEA:184701,LATAM:20409,ib:167682,ob:82413,AMER_ib:29524,AMER_ob:1788,APAC_ib:8926,APAC_ob:4748,EMEA_ib:108824,EMEA_ob:75877,LATAM_ib:20409,LATAM_ob:0},
-  {m:"Mar'25",total:355985,r:16,AMER:140528,APAC:9996,EMEA:160965,LATAM:44496,ib:273397,ob:82588,AMER_ib:126355,AMER_ob:14173,APAC_ib:8448,APAC_ob:1548,EMEA_ib:94098,EMEA_ob:66867,LATAM_ib:44496,LATAM_ob:0},
-  {m:"Apr'25",total:188775,r:16,AMER:20014,APAC:8960,EMEA:125369,LATAM:34432,ib:100388,ob:88387,AMER_ib:15718,AMER_ob:4296,APAC_ib:8960,APAC_ob:0,EMEA_ib:64320,EMEA_ob:61050,LATAM_ib:11391,LATAM_ob:23042},
-  {m:"May'25",total:194902,r:15,AMER:30118,APAC:2498,EMEA:141769,LATAM:20516,ib:122356,ob:72546,AMER_ib:23146,AMER_ob:6972,APAC_ib:2498,APAC_ob:0,EMEA_ib:86124,EMEA_ob:55645,LATAM_ib:10587,LATAM_ob:9929},
-  {m:"Jun'25",total:269721,r:15,AMER:103730,APAC:2234,EMEA:150627,LATAM:13130,ib:159764,ob:109958,AMER_ib:67232,AMER_ob:36498,APAC_ib:2234,APAC_ob:0,EMEA_ib:77167,EMEA_ob:73460,LATAM_ib:13130,LATAM_ob:0},
-  {m:"Jul'25",total:220209,r:14,AMER:47897,APAC:3084,EMEA:151395,LATAM:17832,ib:141121,ob:79088,AMER_ib:38306,AMER_ob:9591,APAC_ib:3084,APAC_ob:0,EMEA_ib:92135,EMEA_ob:59261,LATAM_ib:7596,LATAM_ob:10236},
-  {m:"Aug'25",total:244759,r:15,AMER:86033,APAC:11779,EMEA:131635,LATAM:15312,ib:173792,ob:70967,AMER_ib:86033,AMER_ob:0,APAC_ib:4334,APAC_ob:7445,EMEA_ib:70741,EMEA_ob:60894,LATAM_ib:12684,LATAM_ob:2628},
-  {m:"Sep'25",total:242123,r:15,AMER:31897,APAC:24713,EMEA:143012,LATAM:42502,ib:114915,ob:127209,AMER_ib:22700,AMER_ob:9197,APAC_ib:5161,APAC_ob:19551,EMEA_ib:70348,EMEA_ob:72664,LATAM_ib:16706,LATAM_ob:25796},
-  {m:"Oct'25",total:324262,r:14,AMER:206880,APAC:11999,EMEA:98135,LATAM:7248,ib:226101,ob:98161,AMER_ib:197246,AMER_ob:9633,APAC_ib:2240,APAC_ob:9759,EMEA_ib:19366,EMEA_ob:78769,LATAM_ib:7248,LATAM_ob:0},
-  {m:"Nov'25",total:225584,r:17,AMER:47563,APAC:44931,EMEA:93351,LATAM:39739,ib:153309,ob:72275,AMER_ib:38059,AMER_ob:9504,APAC_ib:16052,APAC_ob:28879,EMEA_ib:64725,EMEA_ob:28626,LATAM_ib:34473,LATAM_ob:5266},
-  {m:"Dec'25",total:194129,r:17,AMER:69016,APAC:24921,EMEA:95571,LATAM:4621,ib:132870,ob:61259,AMER_ib:54123,AMER_ob:14893,APAC_ib:16866,APAC_ob:8055,EMEA_ib:57260,EMEA_ob:38311,LATAM_ib:4621,LATAM_ob:0},
-  {m:"Jan'26",total:255554,r:15,AMER:78504,APAC:25228,EMEA:106496,LATAM:45326,ib:162970,ob:92584,AMER_ib:74217,AMER_ob:4287,APAC_ib:10498,APAC_ob:14730,EMEA_ib:62756,EMEA_ob:43740,LATAM_ib:15499,LATAM_ob:29827},
-  {m:"Feb'26",total:327844,r:16,AMER:69872,APAC:13307,EMEA:189944,LATAM:54722,ib:256926,ob:70918,AMER_ib:66767,AMER_ob:3104,APAC_ib:8064,APAC_ob:5243,EMEA_ib:149845,EMEA_ob:40099,LATAM_ib:32250,LATAM_ob:22472},
-  {m:"Mar'26",total:298583,r:13,AMER:71710,APAC:16803,EMEA:176398,LATAM:33672,ib:224683,ob:73900,AMER_ib:63543,AMER_ob:8167,APAC_ib:12615,APAC_ob:4188,EMEA_ib:116652,EMEA_ob:59746,LATAM_ib:31872,LATAM_ob:1800},
+  {m:"Jan'24",total:70278,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:47371,APAC:0,EMEA:22907,LATAM:0,ib:53943,ob:16335,AMER_ib:40998,AMER_ob:6373,APAC_ib:0,APAC_ob:0,EMEA_ib:12945,EMEA_ob:9962,LATAM_ib:0,LATAM_ob:0},
+  {m:"Feb'24",total:96327,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:53017,APAC:0,EMEA:43310,LATAM:0,ib:80213,ob:16114,AMER_ib:50908,AMER_ob:2109,APAC_ib:0,APAC_ob:0,EMEA_ib:29305,EMEA_ob:14005,LATAM_ib:0,LATAM_ob:0},
+  {m:"Mar'24",total:250430,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:148936,APAC:0,EMEA:101494,LATAM:0,ib:187037,ob:63393,AMER_ib:106484,AMER_ob:42452,APAC_ib:0,APAC_ob:0,EMEA_ib:80553,EMEA_ob:20941,LATAM_ib:0,LATAM_ob:0},
+  {m:"Apr'24",total:168270,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:65674,APAC:0,EMEA:99803,LATAM:0,ib:117401,ob:50869,AMER_ib:57126,AMER_ob:8548,APAC_ib:0,APAC_ob:0,EMEA_ib:57482,EMEA_ob:42320,LATAM_ib:0,LATAM_ob:0},
+  {m:"May'24",total:157777,r:13,r_ib:13,r_ob:11,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:65959,APAC:0,EMEA:81753,LATAM:7789,ib:98736,ob:59041,AMER_ib:19291,AMER_ob:46668,APAC_ib:0,APAC_ob:0,EMEA_ib:69380,EMEA_ob:12373,LATAM_ib:7789,LATAM_ob:0},
+  {m:"Jun'24",total:170041,r:14,r_ib:14,r_ob:12,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:51272,APAC:4195,EMEA:100119,LATAM:5954,ib:130860,ob:39180,AMER_ib:48852,AMER_ob:2420,APAC_ib:4195,APAC_ob:0,EMEA_ib:63359,EMEA_ob:36761,LATAM_ib:5954,LATAM_ob:0},
+  {m:"Jul'24",total:152914,r:13,r_ib:13,r_ob:11,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:39737,APAC:4754,EMEA:78150,LATAM:27479,ib:118512,ob:34402,AMER_ib:34940,AMER_ob:4797,APAC_ib:4754,APAC_ob:0,EMEA_ib:58494,EMEA_ob:19656,LATAM_ib:17530,LATAM_ob:9949},
+  {m:"Aug'24",total:105946,r:16,r_ib:16,r_ob:14,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:21606,APAC:5366,EMEA:57180,LATAM:21794,ib:78297,ob:27648,AMER_ib:19806,AMER_ob:1800,APAC_ib:5366,APAC_ob:0,EMEA_ib:35701,EMEA_ob:21478,LATAM_ib:17424,LATAM_ob:4370},
+  {m:"Sep'24",total:450201,r:17,r_ib:17,r_ob:15,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:173890,APAC:7930,EMEA:248749,LATAM:17232,ib:308641,ob:141559,AMER_ib:56908,AMER_ob:116982,APAC_ib:7930,APAC_ob:0,EMEA_ib:224172,EMEA_ob:24577,LATAM_ib:17232,LATAM_ob:0},
+  {m:"Oct'24",total:298399,r:19,r_ib:19,r_ob:17,r_EMEA:9,r_EMEA_ib:9,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:6,r_AMER_ib:6,r_AMER_ob:6,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:167532,APAC:9964,EMEA:110643,LATAM:10260,ib:225540,ob:72859,AMER_ib:125452,AMER_ob:42079,APAC_ib:4824,APAC_ob:5140,EMEA_ib:86792,EMEA_ob:23851,LATAM_ib:8472,LATAM_ob:1788},
+  {m:"Nov'24",total:284743,r:15,r_ib:15,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:4,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:75555,APAC:21727,EMEA:170742,LATAM:5856,ib:233797,ob:50946,AMER_ib:61735,AMER_ob:13820,APAC_ib:21727,APAC_ob:0,EMEA_ib:133616,EMEA_ob:37126,LATAM_ib:5856,LATAM_ob:0},
+  {m:"Dec'24",total:318688,r:14,r_ib:14,r_ob:11,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:2,r_AMER_ib:2,r_AMER_ob:1,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:154388,APAC:17737,EMEA:136776,LATAM:6304,ib:218015,ob:100673,AMER_ib:144508,AMER_ob:9880,APAC_ib:12436,APAC_ob:5301,EMEA_ib:53552,EMEA_ob:83224,LATAM_ib:4036,LATAM_ob:2268},
+  {m:"Jan'25",total:163017,r:13,r_ib:13,r_ob:10,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:46356,APAC:2834,EMEA:106855,LATAM:6972,ib:125611,ob:37405,AMER_ib:46356,AMER_ob:0,APAC_ib:2834,APAC_ob:0,EMEA_ib:74991,EMEA_ob:31864,LATAM_ib:1430,LATAM_ob:5542},
+  {m:"Feb'25",total:250095,r:13,r_ib:13,r_ob:12,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:8,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:31312,APAC:13674,EMEA:184701,LATAM:20409,ib:167682,ob:82413,AMER_ib:29524,AMER_ob:1788,APAC_ib:8926,APAC_ob:4748,EMEA_ib:108824,EMEA_ob:75877,LATAM_ib:20409,LATAM_ob:0},
+  {m:"Mar'25",total:355985,r:14,r_ib:14,r_ob:13,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:8,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:140528,APAC:9996,EMEA:160965,LATAM:44496,ib:273397,ob:82588,AMER_ib:126355,AMER_ob:14173,APAC_ib:8448,APAC_ob:1548,EMEA_ib:94098,EMEA_ob:66867,LATAM_ib:44496,LATAM_ob:0},
+  {m:"Apr'25",total:188775,r:12,r_ib:12,r_ob:12,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:1,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:20014,APAC:8960,EMEA:125369,LATAM:34432,ib:100388,ob:88387,AMER_ib:15718,AMER_ob:4296,APAC_ib:8960,APAC_ob:0,EMEA_ib:64320,EMEA_ob:61050,LATAM_ib:11391,LATAM_ob:23042},
+  {m:"May'25",total:194902,r:13,r_ib:13,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:2,r_AMER_ib:2,r_AMER_ob:2,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:30118,APAC:2498,EMEA:141769,LATAM:20516,ib:122356,ob:72546,AMER_ib:23146,AMER_ob:6972,APAC_ib:2498,APAC_ob:0,EMEA_ib:86124,EMEA_ob:55645,LATAM_ib:10587,LATAM_ob:9929},
+  {m:"Jun'25",total:269721,r:15,r_ib:15,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:2,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:103730,APAC:2234,EMEA:150627,LATAM:13130,ib:159764,ob:109958,AMER_ib:67232,AMER_ob:36498,APAC_ib:2234,APAC_ob:0,EMEA_ib:77167,EMEA_ob:73460,LATAM_ib:13130,LATAM_ob:0},
+  {m:"Jul'25",total:220209,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:47897,APAC:3084,EMEA:151395,LATAM:17832,ib:141121,ob:79088,AMER_ib:38306,AMER_ob:9591,APAC_ib:3084,APAC_ob:0,EMEA_ib:92135,EMEA_ob:59261,LATAM_ib:7596,LATAM_ob:10236},
+  {m:"Aug'25",total:244759,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:86033,APAC:11779,EMEA:131635,LATAM:15312,ib:173792,ob:70967,AMER_ib:86033,AMER_ob:0,APAC_ib:4334,APAC_ob:7445,EMEA_ib:70741,EMEA_ob:60894,LATAM_ib:12684,LATAM_ob:2628},
+  {m:"Sep'25",total:242123,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:31897,APAC:24713,EMEA:143012,LATAM:42502,ib:114915,ob:127209,AMER_ib:22700,AMER_ob:9197,APAC_ib:5161,APAC_ob:19551,EMEA_ib:70348,EMEA_ob:72664,LATAM_ib:16706,LATAM_ob:25796},
+  {m:"Oct'25",total:324262,r:14,r_ib:14,r_ob:14,r_EMEA:5,r_EMEA_ib:5,r_EMEA_ob:5,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:206880,APAC:11999,EMEA:98135,LATAM:7248,ib:226101,ob:98161,AMER_ib:197246,AMER_ob:9633,APAC_ib:2240,APAC_ob:9759,EMEA_ib:19366,EMEA_ob:78769,LATAM_ib:7248,LATAM_ob:0},
+  {m:"Nov'25",total:225584,r:14,r_ib:14,r_ob:14,r_EMEA:5,r_EMEA_ib:5,r_EMEA_ob:5,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:47563,APAC:44931,EMEA:93351,LATAM:39739,ib:153309,ob:72275,AMER_ib:38059,AMER_ob:9504,APAC_ib:16052,APAC_ob:28879,EMEA_ib:64725,EMEA_ob:28626,LATAM_ib:34473,LATAM_ob:5266},
+  {m:"Dec'25",total:194129,r:15,r_ib:15,r_ob:15,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:69016,APAC:24921,EMEA:95571,LATAM:4621,ib:132870,ob:61259,AMER_ib:54123,AMER_ob:14893,APAC_ib:16866,APAC_ob:8055,EMEA_ib:57260,EMEA_ob:38311,LATAM_ib:4621,LATAM_ob:0},
+  {m:"Jan'26",total:255554,r:15,r_ib:14,r_ob:14,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:78504,APAC:25228,EMEA:106496,LATAM:45326,ib:162970,ob:92584,AMER_ib:74217,AMER_ob:4287,APAC_ib:10498,APAC_ob:14730,EMEA_ib:62756,EMEA_ob:43740,LATAM_ib:15499,LATAM_ob:29827},
+  {m:"Feb'26",total:327844,r:16,r_ib:9,r_ob:10,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:3,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:69872,APAC:13307,EMEA:189944,LATAM:54722,ib:256926,ob:70918,AMER_ib:66767,AMER_ob:3104,APAC_ib:8064,APAC_ob:5243,EMEA_ib:149845,EMEA_ob:40099,LATAM_ib:32250,LATAM_ob:22472},
+  {m:"Mar'26",total:348306,r:13,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:71710,APAC:16803,EMEA:181263,LATAM:78530,ib:293550,ob:54756,AMER_ib:63543,AMER_ob:8167,APAC_ib:12615,APAC_ob:4188,EMEA_ib:143052,EMEA_ob:38211,LATAM_ib:74340,LATAM_ob:4190},
 ];
 const HIST_PIPE = [
-  {m:"Jan'24",total:832136,r:10,AMER:62146,APAC:0,EMEA:401495,LATAM:0,ib:359137,ob:472999,AMER_ib:23209,AMER_ob:38937,APAC_ib:0,APAC_ob:0,EMEA_ib:114194,EMEA_ob:287301,LATAM_ib:0,LATAM_ob:0},
-  {m:"Feb'24",total:729327,r:11,AMER:102674,APAC:0,EMEA:361116,LATAM:0,ib:293352,ob:435975,AMER_ib:25797,AMER_ob:76878,APAC_ib:0,APAC_ob:0,EMEA_ib:159296,EMEA_ob:201820,LATAM_ib:0,LATAM_ob:0},
-  {m:"Mar'24",total:996220,r:14,AMER:80742,APAC:0,EMEA:619905,LATAM:0,ib:353817,ob:642404,AMER_ib:16767,AMER_ob:63974,APAC_ib:0,APAC_ob:0,EMEA_ib:238828,EMEA_ob:381078,LATAM_ib:0,LATAM_ob:0},
-  {m:"Apr'24",total:1228100,r:16,AMER:193137,APAC:0,EMEA:686461,LATAM:1800,ib:618500,ob:609600,AMER_ib:94141,AMER_ob:98996,APAC_ib:0,APAC_ob:0,EMEA_ib:352115,EMEA_ob:334346,LATAM_ib:1800,LATAM_ob:0},
-  {m:"May'24",total:1107868,r:16,AMER:187019,APAC:0,EMEA:608956,LATAM:59581,ib:599481,ob:508387,AMER_ib:83971,AMER_ob:103047,APAC_ib:0,APAC_ob:0,EMEA_ib:373017,EMEA_ob:235940,LATAM_ib:54385,LATAM_ob:5196},
-  {m:"Jun'24",total:969256,r:18,AMER:128873,APAC:50269,EMEA:498799,LATAM:62078,ib:522836,ob:446421,AMER_ib:50643,AMER_ob:78230,APAC_ib:32505,APAC_ob:17764,EMEA_ib:312151,EMEA_ob:186647,LATAM_ib:39746,LATAM_ob:22332},
-  {m:"Jul'24",total:1016974,r:17,AMER:175178,APAC:81020,EMEA:451475,LATAM:84098,ib:583785,ob:433190,AMER_ib:26190,AMER_ob:148988,APAC_ib:40922,APAC_ob:40099,EMEA_ib:351947,EMEA_ob:99528,LATAM_ib:57001,LATAM_ob:27097},
-  {m:"Aug'24",total:1313730,r:17,AMER:478423,APAC:149897,EMEA:400154,LATAM:111625,ib:951889,ob:361842,AMER_ib:432038,AMER_ob:46385,APAC_ib:80946,APAC_ob:68951,EMEA_ib:305773,EMEA_ob:94381,LATAM_ib:60455,LATAM_ob:51170},
-  {m:"Sep'24",total:1167056,r:19,AMER:77634,APAC:66329,EMEA:699446,LATAM:19590,ib:752306,ob:414750,AMER_ib:29768,AMER_ob:47866,APAC_ib:43587,APAC_ob:22742,EMEA_ib:502529,EMEA_ob:196917,LATAM_ib:14574,LATAM_ob:5016},
-  {m:"Oct'24",total:1175215,r:18,AMER:139040,APAC:94166,EMEA:638359,LATAM:69110,ib:659838,ob:515377,AMER_ib:111523,AMER_ob:27516,APAC_ib:35762,APAC_ob:58404,EMEA_ib:353577,EMEA_ob:284782,LATAM_ib:47377,LATAM_ob:21733},
-  {m:"Nov'24",total:1202015,r:17,AMER:262093,APAC:86487,EMEA:619822,LATAM:88090,ib:680931,ob:521084,AMER_ib:154880,AMER_ob:107212,APAC_ib:56444,APAC_ob:30043,EMEA_ib:320305,EMEA_ob:299517,LATAM_ib:8544,LATAM_ob:79546},
-  {m:"Dec'24",total:505604,r:15,AMER:116555,APAC:41562,EMEA:321198,LATAM:26289,ib:317849,ob:187755,AMER_ib:104683,AMER_ob:11872,APAC_ib:22051,APAC_ob:19511,EMEA_ib:180683,EMEA_ob:140515,LATAM_ib:10432,LATAM_ob:15857},
-  {m:"Jan'25",total:1002765,r:15,AMER:216750,APAC:61185,EMEA:641821,LATAM:83008,ib:548394,ob:454371,AMER_ib:212334,AMER_ob:4416,APAC_ib:26019,APAC_ob:35166,EMEA_ib:267761,EMEA_ob:374061,LATAM_ib:42280,LATAM_ob:40728},
-  {m:"Feb'25",total:1161712,r:15,AMER:168703,APAC:107727,EMEA:731428,LATAM:153854,ib:674987,ob:486725,AMER_ib:145723,AMER_ob:22980,APAC_ib:49799,APAC_ob:57928,EMEA_ib:391635,EMEA_ob:339793,LATAM_ib:87830,LATAM_ob:66024},
-  {m:"Mar'25",total:1206760,r:17,AMER:166712,APAC:82121,EMEA:838676,LATAM:119251,ib:656157,ob:550603,AMER_ib:153740,AMER_ob:12972,APAC_ib:30224,APAC_ob:51896,EMEA_ib:415871,EMEA_ob:422805,LATAM_ib:56321,LATAM_ob:62930},
-  {m:"Apr'25",total:743745,r:18,AMER:127357,APAC:63397,EMEA:360636,LATAM:192355,ib:327611,ob:416135,AMER_ib:96937,AMER_ob:30420,APAC_ib:16877,APAC_ob:46520,EMEA_ib:142300,EMEA_ob:218336,LATAM_ib:71496,LATAM_ob:120859},
-  {m:"May'25",total:740467,r:16,AMER:124600,APAC:64913,EMEA:421632,LATAM:129322,ib:292802,ob:447664,AMER_ib:56134,AMER_ob:68466,APAC_ib:24827,APAC_ob:40086,EMEA_ib:150428,EMEA_ob:271204,LATAM_ib:61414,LATAM_ob:67908},
-  {m:"Jun'25",total:973676,r:19,AMER:137953,APAC:51046,EMEA:630918,LATAM:153758,ib:406895,ob:566780,AMER_ib:76615,AMER_ob:61338,APAC_ib:17891,APAC_ob:33156,EMEA_ib:236776,EMEA_ob:394142,LATAM_ib:75613,LATAM_ob:78145},
-  {m:"Jul'25",total:1036852,r:16,AMER:214484,APAC:56931,EMEA:613673,LATAM:151765,ib:413243,ob:623609,AMER_ib:79892,AMER_ob:134592,APAC_ib:13756,APAC_ob:43175,EMEA_ib:232635,EMEA_ob:381038,LATAM_ib:86960,LATAM_ob:64805},
-  {m:"Aug'25",total:1027751,r:15,AMER:174168,APAC:178856,EMEA:548362,LATAM:126366,ib:430810,ob:596942,AMER_ib:150864,AMER_ob:23303,APAC_ib:23753,APAC_ob:155104,EMEA_ib:187435,EMEA_ob:360927,LATAM_ib:68758,LATAM_ob:57608},
-  {m:"Sep'25",total:1323169,r:16,AMER:274771,APAC:160882,EMEA:730163,LATAM:157353,ib:511386,ob:811783,AMER_ib:221703,AMER_ob:53069,APAC_ib:50816,APAC_ob:110066,EMEA_ib:176334,EMEA_ob:553828,LATAM_ib:62534,LATAM_ob:94820},
-  {m:"Oct'25",total:1172709,r:17,AMER:323874,APAC:236451,EMEA:487187,LATAM:125198,ib:544764,ob:627946,AMER_ib:275301,AMER_ob:48573,APAC_ib:44703,APAC_ob:191748,EMEA_ib:173775,EMEA_ob:313412,LATAM_ib:50985,LATAM_ob:74213},
-  {m:"Nov'25",total:1308726,r:18,AMER:209315,APAC:135524,EMEA:817136,LATAM:146751,ib:767752,ob:540973,AMER_ib:165958,AMER_ob:43357,APAC_ib:36098,APAC_ob:99426,EMEA_ib:457355,EMEA_ob:359781,LATAM_ib:108342,LATAM_ob:38409},
-  {m:"Dec'25",total:1054190,r:16,AMER:192563,APAC:152652,EMEA:610410,LATAM:98564,ib:540490,ob:513700,AMER_ib:172649,AMER_ob:19914,APAC_ib:63906,APAC_ob:88746,EMEA_ib:249299,EMEA_ob:361111,LATAM_ib:54636,LATAM_ob:43928},
-  {m:"Jan'26",total:1536333,r:16,AMER:366594,APAC:157839,EMEA:808594,LATAM:203306,ib:1148613,ob:387720,AMER_ib:360390,AMER_ob:6204,APAC_ib:56156,APAC_ob:101682,EMEA_ib:595238,EMEA_ob:213356,LATAM_ib:136829,LATAM_ob:66478},
-  {m:"Feb'26",total:1299021,r:15,AMER:274636,APAC:92509,EMEA:755290,LATAM:176586,ib:802978,ob:496043,AMER_ib:233071,AMER_ob:41566,APAC_ib:58448,APAC_ob:34061,EMEA_ib:461084,EMEA_ob:294207,LATAM_ib:50376,LATAM_ob:126210},
-  {m:"Mar'26",total:2118626,r:13,AMER:222633,APAC:212953,EMEA:1376763,LATAM:306276,ib:1623287,ob:495338,AMER_ib:167847,AMER_ob:54787,APAC_ib:124910,APAC_ob:88043,EMEA_ib:1191489,EMEA_ob:185274,LATAM_ib:139041,LATAM_ob:167234},
+  {m:"Jan'24",total:832136,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:62146,APAC:0,EMEA:401495,LATAM:0,ib:359137,ob:472999,AMER_ib:23209,AMER_ob:38937,APAC_ib:0,APAC_ob:0,EMEA_ib:114194,EMEA_ob:287301,LATAM_ib:0,LATAM_ob:0},
+  {m:"Feb'24",total:729327,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:102674,APAC:0,EMEA:361116,LATAM:0,ib:293352,ob:435975,AMER_ib:25797,AMER_ob:76878,APAC_ib:0,APAC_ob:0,EMEA_ib:159296,EMEA_ob:201820,LATAM_ib:0,LATAM_ob:0},
+  {m:"Mar'24",total:996220,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:80742,APAC:0,EMEA:619905,LATAM:0,ib:353817,ob:642404,AMER_ib:16767,AMER_ob:63974,APAC_ib:0,APAC_ob:0,EMEA_ib:238828,EMEA_ob:381078,LATAM_ib:0,LATAM_ob:0},
+  {m:"Apr'24",total:1228100,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:193137,APAC:0,EMEA:686461,LATAM:1800,ib:618500,ob:609600,AMER_ib:94141,AMER_ob:98996,APAC_ib:0,APAC_ob:0,EMEA_ib:352115,EMEA_ob:334346,LATAM_ib:1800,LATAM_ob:0},
+  {m:"May'24",total:1107868,r:13,r_ib:13,r_ob:11,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:187019,APAC:0,EMEA:608956,LATAM:59581,ib:599481,ob:508387,AMER_ib:83971,AMER_ob:103047,APAC_ib:0,APAC_ob:0,EMEA_ib:373017,EMEA_ob:235940,LATAM_ib:54385,LATAM_ob:5196},
+  {m:"Jun'24",total:969256,r:14,r_ib:14,r_ob:12,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:128873,APAC:50269,EMEA:498799,LATAM:62078,ib:522836,ob:446421,AMER_ib:50643,AMER_ob:78230,APAC_ib:32505,APAC_ob:17764,EMEA_ib:312151,EMEA_ob:186647,LATAM_ib:39746,LATAM_ob:22332},
+  {m:"Jul'24",total:1016974,r:13,r_ib:13,r_ob:11,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:175178,APAC:81020,EMEA:451475,LATAM:84098,ib:583785,ob:433190,AMER_ib:26190,AMER_ob:148988,APAC_ib:40922,APAC_ob:40099,EMEA_ib:351947,EMEA_ob:99528,LATAM_ib:57001,LATAM_ob:27097},
+  {m:"Aug'24",total:1313730,r:16,r_ib:16,r_ob:14,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:478423,APAC:149897,EMEA:400154,LATAM:111625,ib:951889,ob:361842,AMER_ib:432038,AMER_ob:46385,APAC_ib:80946,APAC_ob:68951,EMEA_ib:305773,EMEA_ob:94381,LATAM_ib:60455,LATAM_ob:51170},
+  {m:"Sep'24",total:1167056,r:17,r_ib:17,r_ob:15,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:77634,APAC:66329,EMEA:699446,LATAM:19590,ib:752306,ob:414750,AMER_ib:29768,AMER_ob:47866,APAC_ib:43587,APAC_ob:22742,EMEA_ib:502529,EMEA_ob:196917,LATAM_ib:14574,LATAM_ob:5016},
+  {m:"Oct'24",total:1175215,r:19,r_ib:19,r_ob:17,r_EMEA:9,r_EMEA_ib:9,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:6,r_AMER_ib:6,r_AMER_ob:6,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:139040,APAC:94166,EMEA:638359,LATAM:69110,ib:659838,ob:515377,AMER_ib:111523,AMER_ob:27516,APAC_ib:35762,APAC_ob:58404,EMEA_ib:353577,EMEA_ob:284782,LATAM_ib:47377,LATAM_ob:21733},
+  {m:"Nov'24",total:1202015,r:15,r_ib:15,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:4,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:5,r_AMER_ib:5,r_AMER_ob:5,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:262093,APAC:86487,EMEA:619822,LATAM:88090,ib:680931,ob:521084,AMER_ib:154880,AMER_ob:107212,APAC_ib:56444,APAC_ob:30043,EMEA_ib:320305,EMEA_ob:299517,LATAM_ib:8544,LATAM_ob:79546},
+  {m:"Dec'24",total:505604,r:14,r_ib:14,r_ob:11,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:2,r_AMER_ib:2,r_AMER_ob:1,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:116555,APAC:41562,EMEA:321198,LATAM:26289,ib:317849,ob:187755,AMER_ib:104683,AMER_ob:11872,APAC_ib:22051,APAC_ob:19511,EMEA_ib:180683,EMEA_ob:140515,LATAM_ib:10432,LATAM_ob:15857},
+  {m:"Jan'25",total:1002765,r:13,r_ib:13,r_ob:10,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:216750,APAC:61185,EMEA:641821,LATAM:83008,ib:548394,ob:454371,AMER_ib:212334,AMER_ob:4416,APAC_ib:26019,APAC_ob:35166,EMEA_ib:267761,EMEA_ob:374061,LATAM_ib:42280,LATAM_ob:40728},
+  {m:"Feb'25",total:1161712,r:13,r_ib:13,r_ob:12,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:8,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:168703,APAC:107727,EMEA:731428,LATAM:153854,ib:674987,ob:486725,AMER_ib:145723,AMER_ob:22980,APAC_ib:49799,APAC_ob:57928,EMEA_ib:391635,EMEA_ob:339793,LATAM_ib:87830,LATAM_ob:66024},
+  {m:"Mar'25",total:1206760,r:14,r_ib:14,r_ob:13,r_EMEA:8,r_EMEA_ib:8,r_EMEA_ob:8,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:0,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:166712,APAC:82121,EMEA:838676,LATAM:119251,ib:656157,ob:550603,AMER_ib:153740,AMER_ob:12972,APAC_ib:30224,APAC_ob:51896,EMEA_ib:415871,EMEA_ob:422805,LATAM_ib:56321,LATAM_ob:62930},
+  {m:"Apr'25",total:743745,r:12,r_ib:12,r_ob:12,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:1,r_AMER_ib:1,r_AMER_ob:1,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:127357,APAC:63397,EMEA:360636,LATAM:192355,ib:327611,ob:416135,AMER_ib:96937,AMER_ob:30420,APAC_ib:16877,APAC_ob:46520,EMEA_ib:142300,EMEA_ob:218336,LATAM_ib:71496,LATAM_ob:120859},
+  {m:"May'25",total:740467,r:13,r_ib:13,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:2,r_AMER_ib:2,r_AMER_ob:2,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:124600,APAC:64913,EMEA:421632,LATAM:129322,ib:292802,ob:447664,AMER_ib:56134,AMER_ob:68466,APAC_ib:24827,APAC_ob:40086,EMEA_ib:150428,EMEA_ob:271204,LATAM_ib:61414,LATAM_ob:67908},
+  {m:"Jun'25",total:973676,r:15,r_ib:15,r_ob:13,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:2,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:137953,APAC:51046,EMEA:630918,LATAM:153758,ib:406895,ob:566780,AMER_ib:76615,AMER_ob:61338,APAC_ib:17891,APAC_ob:33156,EMEA_ib:236776,EMEA_ob:394142,LATAM_ib:75613,LATAM_ob:78145},
+  {m:"Jul'25",total:1036852,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:214484,APAC:56931,EMEA:613673,LATAM:151765,ib:413243,ob:623609,AMER_ib:79892,AMER_ob:134592,APAC_ib:13756,APAC_ob:43175,EMEA_ib:232635,EMEA_ob:381038,LATAM_ib:86960,LATAM_ob:64805},
+  {m:"Aug'25",total:1027751,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:174168,APAC:178856,EMEA:548362,LATAM:126366,ib:430810,ob:596942,AMER_ib:150864,AMER_ob:23303,APAC_ib:23753,APAC_ob:155104,EMEA_ib:187435,EMEA_ob:360927,LATAM_ib:68758,LATAM_ob:57608},
+  {m:"Sep'25",total:1323169,r:15,r_ib:15,r_ob:15,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:274771,APAC:160882,EMEA:730163,LATAM:157353,ib:511386,ob:811783,AMER_ib:221703,AMER_ob:53069,APAC_ib:50816,APAC_ob:110066,EMEA_ib:176334,EMEA_ob:553828,LATAM_ib:62534,LATAM_ob:94820},
+  {m:"Oct'25",total:1172709,r:14,r_ib:14,r_ob:14,r_EMEA:5,r_EMEA_ib:5,r_EMEA_ob:5,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:323874,APAC:236451,EMEA:487187,LATAM:125198,ib:544764,ob:627946,AMER_ib:275301,AMER_ob:48573,APAC_ib:44703,APAC_ob:191748,EMEA_ib:173775,EMEA_ob:313412,LATAM_ib:50985,LATAM_ob:74213},
+  {m:"Nov'25",total:1308726,r:14,r_ib:14,r_ob:14,r_EMEA:5,r_EMEA_ib:5,r_EMEA_ob:5,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:209315,APAC:135524,EMEA:817136,LATAM:146751,ib:767752,ob:540973,AMER_ib:165958,AMER_ob:43357,APAC_ib:36098,APAC_ob:99426,EMEA_ib:457355,EMEA_ob:359781,LATAM_ib:108342,LATAM_ob:38409},
+  {m:"Dec'25",total:1054190,r:15,r_ib:15,r_ob:15,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:192563,APAC:152652,EMEA:610410,LATAM:98564,ib:540490,ob:513700,AMER_ib:172649,AMER_ob:19914,APAC_ib:63906,APAC_ob:88746,EMEA_ib:249299,EMEA_ob:361111,LATAM_ib:54636,LATAM_ob:43928},
+  {m:"Jan'26",total:1536333,r:16,r_ib:14,r_ob:14,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:366594,APAC:157839,EMEA:808594,LATAM:203306,ib:1148613,ob:387720,AMER_ib:360390,AMER_ob:6204,APAC_ib:56156,APAC_ob:101682,EMEA_ib:595238,EMEA_ob:213356,LATAM_ib:136829,LATAM_ob:66478},
+  {m:"Feb'26",total:1299021,r:15,r_ib:9,r_ob:10,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:3,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:274636,APAC:92509,EMEA:755290,LATAM:176586,ib:802978,ob:496043,AMER_ib:233071,AMER_ob:41566,APAC_ib:58448,APAC_ob:34061,EMEA_ib:461084,EMEA_ob:294207,LATAM_ib:50376,LATAM_ob:126210},
+  {m:"Mar'26",total:2118626,r:13,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:222633,APAC:212953,EMEA:1376763,LATAM:306276,ib:1623287,ob:495338,AMER_ib:167847,AMER_ob:54787,APAC_ib:124910,APAC_ob:88043,EMEA_ib:1191489,EMEA_ob:185274,LATAM_ib:139041,LATAM_ob:167234},
 ];
 
 // ── Historical filter state ────────────────────────────────────────────────
-let histMetric    = 'bookings'; // bookings | pipeline
+let histMetric    = 'pipeline'; // pipeline | bookings
 let histRegion    = 'all';      // all | AMER | APAC | EMEA | LATAM
 let histSource    = 'all';      // all | ib | ob
 let histDateMode  = 'all';      // all | 2024 | 2025 | 2026 | custom
@@ -748,9 +959,29 @@ function getRawHistVal(d) {
   return s === 'all' ? (d[r] || 0) : (d[r + '_' + s] || 0);
 }
 
+// Returns the correct headcount denominator for Per SDR, respecting region+source filters.
+// Falls back to total `r` for pre-Q1 months where granular fields are not yet present.
+function getHeadcount(d) {
+  const r = histRegion, s = histSource;
+  if (r !== 'all' && s !== 'all') {
+    const specific = d['r_' + r + '_' + s];
+    if (specific != null) return specific;
+    const regional = d['r_' + r];
+    if (regional != null) return regional;
+  } else if (r !== 'all') {
+    const regional = d['r_' + r];
+    if (regional != null) return regional;
+  } else if (s !== 'all') {
+    const sourced = d['r_' + s];
+    if (sourced != null) return sourced;
+  }
+  return d.r;
+}
+
 function getHistVal(d) {
   const raw = getRawHistVal(d);
-  return histView === 'perrep' ? (d.r > 0 ? Math.round(raw / d.r) : 0) : raw;
+  const hc  = getHeadcount(d);
+  return histView === 'perrep' ? (hc > 0 ? Math.round(raw / hc) : 0) : raw;
 }
 
 function getHistData(rawData) {
@@ -958,8 +1189,9 @@ function updateHistStats() {
 
 function syncHistFilterUI() {
   document.querySelectorAll('.hist-metric-btn').forEach(b => {
-    const isBook = b.textContent === 'Bookings';
-    b.classList.toggle('active', (isBook && histMetric==='bookings') || (!isBook && histMetric==='pipeline'));
+    b.classList.toggle('active',
+      (b.textContent === 'Pipeline' && histMetric === 'pipeline') ||
+      (b.textContent === 'Bookings' && histMetric === 'bookings'));
   });
   document.querySelectorAll('#hist-region-pills .pill-btn').forEach(b =>
     b.classList.toggle('active', b.getAttribute('data-hr') === histRegion));
@@ -992,8 +1224,8 @@ function renderHistory() {
           <div class="hist-sub">Jan 2024 – Present · All values in USD · Source: Salesforce Analytics API</div>
         </div>
         <div class="pill-group">
-          <button class="pill-btn hist-metric-btn" onclick="setHistMetric('bookings',this)">Bookings</button>
           <button class="pill-btn hist-metric-btn" onclick="setHistMetric('pipeline',this)">Pipeline</button>
+          <button class="pill-btn hist-metric-btn" onclick="setHistMetric('bookings',this)">Bookings</button>
         </div>
       </div>
 
@@ -1157,6 +1389,7 @@ function setRegion(r,el){
 }
 
 document.getElementById('lu-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+updateMonthPills();
 buildWdStatus();
 render();
 </script>
