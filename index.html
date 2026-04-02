@@ -331,14 +331,14 @@ const Q2_REPS = [
   { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['inbound','inbound','inbound'],
     targets: [{demos:null,book:36000},{demos:null,book:36000},{demos:null,book:36000}],
-    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
+    actuals: [{demos:0,book:1800},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [{t:96122,a:0},{t:96122,a:0},{t:96122,a:0}] },
 
   { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['inbound','inbound','inbound'],
     targets: [{demos:null,book:15000},{demos:null,book:15000},{demos:null,book:15000}],
     actuals: [{demos:0,book:12409},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:107399,a:2000},{t:107399,a:0},{t:107399,a:0}] },
+    pipe:    [{t:107399,a:12174},{t:107399,a:0},{t:107399,a:0}] },
 
   { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['outbound','outbound','outbound'],
@@ -382,13 +382,13 @@ const Q2_REPS = [
     types:   ['ramp','hybrid','hybrid'],
     targets: [{demos:10,book:null},{demos:15,book:15000},{demos:15,book:15000}],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [null,null,null] },
+    pipe:    [{t:null,a:4782},null,null] },
 
   { id:'khye', name:'Khye', region:'APAC', gbp:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
-    actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:66708,a:5899*G},{t:66708,a:0},{t:66708,a:0}] },
+    actuals: [{demos:1,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{t:66708,a:6782*G},{t:66708,a:0},{t:66708,a:0}] },
 
   { id:'stanly', name:'Stanly', region:'APAC', gbp:true, isLegacyQ1:false,
     types:   [null,null,null],
@@ -418,13 +418,13 @@ const Q2_REPS = [
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{a:0},{a:0},{a:0}] },
+    pipe:    [{a:13000},{a:0},{a:0}] },
 
   { id:'nickm', name:'Nick M', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{a:0},{a:0},{a:0}] },
+    pipe:    [{a:3600},{a:0},{a:0}] },
 
   { id:'gleice', name:'Gleice', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
@@ -454,7 +454,7 @@ const Q1_MANAGER_PIPE = { AMER: [null, null, 8050] };
 
 // ── Q2 legacy bookings (empty — fresh quarter) ────────────────────────────
 const Q2_LEGACY       = [];
-const Q2_LEGACY_AMER  = [];
+const Q2_LEGACY_AMER  = [{ name:'Seth', book:[1800,0,0], q1extra:0 }];
 const Q2_LEGACY_LATAM = [];
 const Q2_MANAGER_PIPE = { AMER: [null, null, null] };
 
@@ -930,7 +930,7 @@ const HIST_PIPE = [
   {m:"Dec'25",total:1054190,r:15,r_ib:15,r_ob:15,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:192563,APAC:152652,EMEA:610410,LATAM:98564,ib:540490,ob:513700,AMER_ib:172649,AMER_ob:19914,APAC_ib:63906,APAC_ob:88746,EMEA_ib:249299,EMEA_ob:361111,LATAM_ib:54636,LATAM_ob:43928},
   {m:"Jan'26",total:1536333,r:16,r_ib:14,r_ob:14,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:366594,APAC:157839,EMEA:808594,LATAM:203306,ib:1148613,ob:387720,AMER_ib:360390,AMER_ob:6204,APAC_ib:56156,APAC_ob:101682,EMEA_ib:595238,EMEA_ob:213356,LATAM_ib:136829,LATAM_ob:66478},
   {m:"Feb'26",total:1299021,r:15,r_ib:9,r_ob:10,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:3,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:274636,APAC:92509,EMEA:755290,LATAM:176586,ib:802978,ob:496043,AMER_ib:233071,AMER_ob:41566,APAC_ib:58448,APAC_ob:34061,EMEA_ib:461084,EMEA_ob:294207,LATAM_ib:50376,LATAM_ob:126210},
-  {m:"Mar'26",total:2118626,r:13,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:222633,APAC:212953,EMEA:1376763,LATAM:306276,ib:1623287,ob:495338,AMER_ib:167847,AMER_ob:54787,APAC_ib:124910,APAC_ob:88043,EMEA_ib:1191489,EMEA_ob:185274,LATAM_ib:139041,LATAM_ob:167234},
+  {m:"Mar'26",total:2162425,r:13,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:234021,APAC:208765,EMEA:1411838,LATAM:307800,ib:1668863,ob:493562,AMER_ib:179235,AMER_ob:54787,APAC_ib:124910,APAC_ob:83855,EMEA_ib:1224164,EMEA_ob:187674,LATAM_ib:140553,LATAM_ob:167246},
 ];
 
 // ── Historical filter state ────────────────────────────────────────────────
