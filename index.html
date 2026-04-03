@@ -943,6 +943,8 @@ let histDateEnd   = 26;
 let histView      = 'total';    // total | perrep
 let histShowAvg   = true;       // running average line visible
 let histShowVals  = false;      // data labels on bars
+let histGroupTime   = 'month';  // month | quarter | year
+let histGroupRegion = false;    // false = total bar | true = split 4 bars by region
 let histChart     = null;
 
 const HIST_ALL_MONTHS = [
@@ -999,21 +1001,100 @@ function fmtHistVal(v) {
   return '$' + Math.round(v);
 }
 
-function renderHistChart() {
-  const rawData  = histMetric === 'bookings' ? HIST_BOOK : HIST_PIPE;
-  const data     = getHistData(rawData);
-  const labels   = data.map(d => d.m);
-  const vals     = data.map(d => getHistVal(d));
-  const isPR     = histView === 'perrep';
-  const yLabel   = isPR ? 'USD per SDR' : 'USD';
-  const barColor = isPR ? 'rgba(124,58,237,0.18)' : 'rgba(67,97,238,0.18)';
-  const barBorder= isPR ? 'rgba(124,58,237,0.7)'  : 'rgba(67,97,238,0.7)';
-  const lblColor = isPR ? 'rgba(124,58,237,0.85)' : 'rgba(67,97,238,0.85)';
-  let cumSum = 0;
-  const runningAvg = vals.map((v, i) => { cumSum += v; return Math.round(cumSum / (i + 1)); });
+// ── Region colours for split mode ────────────────────────────────────────
+const HIST_REGIONS = ['EMEA','APAC','AMER','LATAM'];
+const HIST_REG_COLORS = {
+  EMEA:  { bg:'rgba(244,124,32,0.22)',  border:'rgba(244,124,32,0.85)'  },
+  APAC:  { bg:'rgba(43,123,123,0.22)', border:'rgba(43,123,123,0.85)'  },
+  AMER:  { bg:'rgba(225,29,72,0.22)',   border:'rgba(225,29,72,0.85)'   },
+  LATAM: { bg:'rgba(101,163,13,0.22)',  border:'rgba(101,163,13,0.85)'  },
+};
 
-  const datasets = [
-    {
+// Aggregate monthly HIST data into quarters or years for the chart
+function groupHistData(data) {
+  if (histGroupTime === 'month') return data;
+  const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const SUM_FIELDS = ['total','EMEA','APAC','AMER','LATAM','ib','ob',
+    'EMEA_ib','EMEA_ob','APAC_ib','APAC_ob','AMER_ib','AMER_ob','LATAM_ib','LATAM_ob'];
+  const AVG_FIELDS = ['r','r_EMEA','r_APAC','r_AMER','r_LATAM',
+    'r_ib','r_ob','r_EMEA_ib','r_EMEA_ob','r_APAC_ib','r_APAC_ob',
+    'r_AMER_ib','r_AMER_ob','r_LATAM_ib','r_LATAM_ob'];
+  const groups = {}, order = [];
+  data.forEach(d => {
+    const mn = d.m.slice(0,3), yr = d.m.slice(4);
+    const mi = MO.indexOf(mn);
+    const key = histGroupTime === 'quarter'
+      ? 'Q' + (Math.floor(mi / 3) + 1) + "'" + yr
+      : '20' + yr;
+    if (!groups[key]) {
+      const g = { m: key, _n: 0 };
+      SUM_FIELDS.forEach(k => g[k] = 0);
+      AVG_FIELDS.forEach(k => g[k] = 0);
+      groups[key] = g; order.push(key);
+    }
+    const g = groups[key];
+    SUM_FIELDS.forEach(k => { g[k] += (d[k] || 0); });
+    AVG_FIELDS.forEach(k => { g[k] += (d[k] || 0); });
+    g._n++;
+  });
+  order.forEach(k => {
+    const g = groups[k];
+    AVG_FIELDS.forEach(fk => { g[fk] = Math.round(g[fk] / g._n); });
+  });
+  return order.map(k => groups[k]);
+}
+
+// Value for a single region from a (possibly grouped) data point
+function getRegionHistVal(d, region) {
+  const s = histSource;
+  const raw = s === 'all' ? (d[region] || 0) : (d[region + '_' + s] || 0);
+  if (histView === 'perrep') {
+    const hc = d['r_' + region] || 1;
+    return hc > 0 ? Math.round(raw / hc) : 0;
+  }
+  return raw;
+}
+
+function renderHistChart() {
+  const rawData = histMetric === 'bookings' ? HIST_BOOK : HIST_PIPE;
+  const data    = groupHistData(getHistData(rawData));
+  const labels  = data.map(d => d.m);
+  const isPR    = histView === 'perrep';
+  const yLabel  = isPR ? 'USD per SDR' : 'USD';
+
+  // Update chart section label to reflect current grouping
+  const chartLabelEl = document.getElementById('hist-chart-title-label');
+  if (chartLabelEl) {
+    chartLabelEl.textContent =
+      histGroupTime === 'quarter' ? 'Quarterly trend' :
+      histGroupTime === 'year'    ? 'Annual trend'    : 'Monthly trend';
+  }
+
+  let datasets = [];
+
+  if (histGroupRegion) {
+    // ── REGION SPLIT MODE: 4 grouped bars (EMEA / APAC / AMER / LATAM) ───
+    HIST_REGIONS.forEach((reg, idx) => {
+      const vals = data.map(d => getRegionHistVal(d, reg));
+      const c = HIST_REG_COLORS[reg];
+      datasets.push({
+        type: 'bar',
+        label: reg,
+        data: vals,
+        backgroundColor: c.bg,
+        borderColor: c.border,
+        borderWidth: 1.5,
+        borderRadius: 3,
+        order: idx + 2,
+      });
+    });
+  } else {
+    // ── TOTAL MODE: single bar (original behaviour) ───────────────────────
+    const vals     = data.map(d => getHistVal(d));
+    const barColor = isPR ? 'rgba(124,58,237,0.18)' : 'rgba(67,97,238,0.18)';
+    const barBorder= isPR ? 'rgba(124,58,237,0.7)'  : 'rgba(67,97,238,0.7)';
+    const lblColor = isPR ? 'rgba(124,58,237,0.85)' : 'rgba(67,97,238,0.85)';
+    datasets.push({
       type: 'bar',
       label: isPR ? 'Per SDR (USD)' : 'Total (USD)',
       data: vals,
@@ -1022,43 +1103,67 @@ function renderHistChart() {
       borderWidth: 1.5,
       borderRadius: 4,
       order: 2,
-    }
-  ];
-  if (histShowAvg) {
-    datasets.push({
-      type: 'line',
-      label: 'Running Avg',
-      data: runningAvg,
-      borderColor: '#0d9f6e',
-      backgroundColor: 'rgba(13,159,110,0.08)',
-      borderWidth: 2,
-      pointRadius: 3,
-      pointHoverRadius: 5,
-      tension: 0.35,
-      fill: false,
-      order: 1,
     });
+    // Running average line (only in total mode — meaningless across 4 regions)
+    if (histShowAvg) {
+      let cumSum = 0;
+      const runningAvg = vals.map((v, i) => { cumSum += v; return Math.round(cumSum / (i + 1)); });
+      datasets.push({
+        type: 'line',
+        label: 'Running Avg',
+        data: runningAvg,
+        borderColor: '#0d9f6e',
+        backgroundColor: 'rgba(13,159,110,0.08)',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        tension: 0.35,
+        fill: false,
+        order: 1,
+      });
+    }
   }
 
-  // Inline plugin: draw value labels on bars using canvas API (no external lib needed)
+  // Inline plugin: draw value labels on top of bars
   const barLabelsPlugin = {
     id: 'barLabels',
     afterDatasetsDraw(chart) {
       if (!histShowVals) return;
-      const {ctx: c, data} = chart;
-      const meta = chart.getDatasetMeta(0);
-      if (!meta || !meta.data) return;
-      c.save();
-      c.font = '600 9px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-      c.textAlign = 'center';
-      c.textBaseline = 'bottom';
-      c.fillStyle = lblColor;
-      meta.data.forEach((bar, i) => {
-        const val = data.datasets[0].data[i];
-        if (!val) return;
-        c.fillText(fmtHistVal(val), bar.x, bar.y - 3);
-      });
-      c.restore();
+      const {ctx: c, data: cd} = chart;
+      if (histGroupRegion) {
+        // Draw a compact label above each region bar
+        HIST_REGIONS.forEach((reg, dsIdx) => {
+          const meta = chart.getDatasetMeta(dsIdx);
+          if (!meta || !meta.data) return;
+          const col = HIST_REG_COLORS[reg].border;
+          c.save();
+          c.font = '600 8px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+          c.textAlign = 'center';
+          c.textBaseline = 'bottom';
+          c.fillStyle = col;
+          meta.data.forEach((bar, i) => {
+            const val = cd.datasets[dsIdx].data[i];
+            if (!val) return;
+            c.fillText(fmtHistVal(val), bar.x, bar.y - 2);
+          });
+          c.restore();
+        });
+      } else {
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || !meta.data) return;
+        const lblColor = isPR ? 'rgba(124,58,237,0.85)' : 'rgba(67,97,238,0.85)';
+        c.save();
+        c.font = '600 9px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+        c.textAlign = 'center';
+        c.textBaseline = 'bottom';
+        c.fillStyle = lblColor;
+        meta.data.forEach((bar, i) => {
+          const val = cd.datasets[0].data[i];
+          if (!val) return;
+          c.fillText(fmtHistVal(val), bar.x, bar.y - 3);
+        });
+        c.restore();
+      }
     }
   };
 
@@ -1070,17 +1175,18 @@ function renderHistChart() {
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      interaction: {mode:'index', intersect:false},
+      interaction: { mode: 'index', intersect: false },
       layout: { padding: { top: histShowVals ? 22 : 4 } },
       plugins: {
-        legend: { display: false },
+        legend: { display: histGroupRegion,
+          labels: { font: { size: 11 }, boxWidth: 12, padding: 16 } },
         tooltip: { callbacks: { label: ctx => `  ${ctx.dataset.label}: ${fmtHistVal(ctx.raw)}` } },
       },
       scales: {
-        x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10},color:'#a0a8c0',maxRotation:45} },
-        y: { position:'left', grid:{color:'rgba(0,0,0,0.04)'},
-             ticks:{font:{size:10},color:'#6b7494',callback:v=>fmtHistVal(v)},
-             title:{display:true,text:yLabel,font:{size:10},color:'#6b7494'} }
+        x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#a0a8c0', maxRotation: 45 } },
+        y: { position: 'left', grid: { color: 'rgba(0,0,0,0.04)' },
+             ticks: { font: { size: 10 }, color: '#6b7494', callback: v => fmtHistVal(v) },
+             title: { display: true, text: yLabel, font: { size: 10 }, color: '#6b7494' } }
       }
     }
   });
@@ -1146,36 +1252,54 @@ function setHistCustomRange() {
 
 function updateHistStats() {
   const rawData = histMetric === 'bookings' ? HIST_BOOK : HIST_PIPE;
-  const data  = getHistData(rawData);
+  // Use grouped data so stats match what's shown in the chart
+  const data  = groupHistData(getHistData(rawData));
   const vals  = data.map(d => getHistVal(d));
   const total = vals.reduce((a, b) => a + b, 0);
-  const monthlyAvg = Math.round(total / vals.length);
+  const periodAvg = Math.round(total / vals.length);
   const maxIdx = vals.indexOf(Math.max(...vals));
   const label  = histMetric === 'bookings' ? 'Bookings' : 'Pipeline';
+
+  // Adapt labels to current grouping
+  const periodWord  = histGroupTime === 'quarter' ? 'quarter' : histGroupTime === 'year' ? 'year' : 'month';
+  const periodCount = data.length + ' ' + periodWord + (data.length !== 1 ? 's' : '');
+  const bestLabel   = histGroupTime === 'quarter' ? 'Best Quarter' :
+                      histGroupTime === 'year'    ? 'Best Year'    : 'Best Month';
+  const avgLabel    = histGroupTime === 'quarter' ? 'Quarterly Avg' :
+                      histGroupTime === 'year'    ? 'Annual Avg'    : 'Monthly Avg';
+
   document.querySelectorAll('.hist-metric-label').forEach(el => el.textContent = label);
   document.getElementById('hist-stat-total').textContent     = fmtHistVal(total);
-  document.getElementById('hist-stat-total-sub').textContent = data.length + ' months · ' + data[0].m + ' – ' + data[data.length-1].m;
-  document.getElementById('hist-stat-avg').textContent       = fmtHistVal(monthlyAvg);
+  document.getElementById('hist-stat-total-sub').textContent = periodCount + ' · ' + data[0].m + ' – ' + data[data.length-1].m;
+  document.getElementById('hist-stat-avg').textContent       = fmtHistVal(periodAvg);
+  const avgLabelEl = document.getElementById('hist-stat-avg-label');
+  if (avgLabelEl) avgLabelEl.textContent = avgLabel;
+  const bestLabelEl = document.getElementById('hist-stat-best-label');
+  if (bestLabelEl) bestLabelEl.textContent = bestLabel;
   document.getElementById('hist-stat-best').textContent      = fmtHistVal(vals[maxIdx]);
   document.getElementById('hist-stat-best-sub').textContent  = data[maxIdx].m;
-  // Trend
+  // Trend — compare last 2 periods vs prior 2 (adapts to grouping)
   const trendEl    = document.getElementById('hist-stat-trend');
   const trendSubEl = document.getElementById('hist-stat-trend-sub');
-  if (vals.length >= 6) {
-    const last3 = vals.slice(-3).reduce((a,b)=>a+b,0)/3;
-    const prev3 = vals.slice(-6,-3).reduce((a,b)=>a+b,0)/3;
-    if (prev3 > 0) {
-      const pct = Math.round(((last3 - prev3) / prev3) * 100);
+  const trendN = histGroupTime === 'year' ? 1 : (histGroupTime === 'quarter' ? 2 : 3);
+  const trendLabel = histGroupTime === 'year' ? 'Last yr vs prior yr' :
+                     histGroupTime === 'quarter' ? 'Last 2 qtrs vs prior 2' : 'Last 3mo vs prior 3mo';
+  if (vals.length >= trendN * 2) {
+    const lastN = vals.slice(-trendN).reduce((a,b)=>a+b,0)/trendN;
+    const prevN = vals.slice(-trendN*2,-trendN).reduce((a,b)=>a+b,0)/trendN;
+    if (prevN > 0) {
+      const pct = Math.round(((lastN - prevN) / prevN) * 100);
       trendEl.innerHTML    = `<span style="color:${pct>=0?'var(--green)':'var(--red)'}">${pct>=0?'+':''}${pct}%</span>`;
-      trendSubEl.textContent = 'Last 3mo vs prior 3mo';
+      trendSubEl.textContent = trendLabel;
     } else { trendEl.textContent = '–'; trendSubEl.textContent = 'Prior period is zero'; }
-  } else { trendEl.textContent = '–'; trendSubEl.textContent = 'Need 6+ months'; }
-  // Ib/Ob split
+  } else { trendEl.textContent = '–'; trendSubEl.textContent = 'Need more periods'; }
+  // Ib/Ob split (always uses raw monthly data for accuracy)
+  const rawMonthly = getHistData(rawData);
   const splitEl    = document.getElementById('hist-stat-split');
   const splitSubEl = document.getElementById('hist-stat-split-sub');
   if (histSource === 'all') {
-    const ibT = data.map(d => histRegion==='all' ? d.ib : (d[histRegion+'_ib']||0)).reduce((a,b)=>a+b,0);
-    const obT = data.map(d => histRegion==='all' ? d.ob : (d[histRegion+'_ob']||0)).reduce((a,b)=>a+b,0);
+    const ibT = rawMonthly.map(d => histRegion==='all' ? d.ib : (d[histRegion+'_ib']||0)).reduce((a,b)=>a+b,0);
+    const obT = rawMonthly.map(d => histRegion==='all' ? d.ob : (d[histRegion+'_ob']||0)).reduce((a,b)=>a+b,0);
     const tot = ibT + obT;
     if (tot > 0) {
       splitEl.textContent    = Math.round(ibT/tot*100) + '% Ib  ·  ' + Math.round(obT/tot*100) + '% Ob';
@@ -1199,6 +1323,26 @@ function syncHistFilterUI() {
     b.classList.toggle('active', b.getAttribute('data-hs') === histSource));
   document.querySelectorAll('#hist-view-pills .pill-btn').forEach(b =>
     b.classList.toggle('active', b.getAttribute('data-hv') === histView));
+  // Group-by time pills
+  document.querySelectorAll('#hist-grouptime-pills .pill-btn').forEach(b =>
+    b.classList.toggle('active', b.getAttribute('data-hgt') === histGroupTime));
+  // Split by region toggle
+  const splitBtn = document.getElementById('hist-split-region-btn');
+  if (splitBtn) {
+    splitBtn.classList.toggle('active', histGroupRegion);
+    // When region split is on, grey out the region filter row
+    const regRow = document.getElementById('hist-region-filter-row');
+    if (regRow) regRow.style.opacity = histGroupRegion ? '0.35' : '1';
+    if (regRow) regRow.style.pointerEvents = histGroupRegion ? 'none' : '';
+    // Running avg toggle: hide when region split is on
+    const avgToggleWrap = document.getElementById('hist-avg-toggle-wrap');
+    if (avgToggleWrap) avgToggleWrap.style.display = histGroupRegion ? 'none' : '';
+    // Switch legend
+    const totLeg = document.getElementById('hist-total-legend');
+    const regLeg = document.getElementById('hist-region-legend');
+    if (totLeg) totLeg.style.display = histGroupRegion ? 'none' : '';
+    if (regLeg) regLeg.style.display = histGroupRegion ? '' : 'none';
+  }
   const avgBtn = document.getElementById('hist-avg-toggle');
   if (avgBtn) avgBtn.classList.toggle('active', histShowAvg);
   const valBtn = document.getElementById('hist-val-toggle');
@@ -1211,6 +1355,19 @@ function syncHistFilterUI() {
     document.getElementById('hist-date-start').value = histDateStart;
     document.getElementById('hist-date-end').value   = histDateEnd;
   }
+}
+
+function setHistGroupTime(gt, el) {
+  histGroupTime = gt;
+  document.querySelectorAll('#hist-grouptime-pills .pill-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  histRefresh();
+}
+
+function toggleHistSplitRegion(el) {
+  histGroupRegion = !histGroupRegion;
+  syncHistFilterUI();
+  histRefresh();
 }
 
 function renderHistory() {
@@ -1229,49 +1386,64 @@ function renderHistory() {
         </div>
       </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow-sm);">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">Period</span>
-          <select id="hist-date-select" onchange="setHistDate(this.value)" style="${ss}">
-            <option value="all">All Time</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-            <option value="custom">Custom Range</option>
-          </select>
-        </div>
-        <div id="hist-custom-dates" style="display:none;align-items:center;gap:6px;">
-          <span style="font-size:11px;color:var(--text3)">From</span>
-          <select id="hist-date-start" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
-          <span style="font-size:11px;color:var(--text3)">to</span>
-          <select id="hist-date-end" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
-        </div>
-        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--text2);">Region</span>
-          <div class="pill-group" id="hist-region-pills">
-            <button class="pill-btn" data-hr="all"  onclick="setHistRegion('all',this)">All</button>
-            <button class="pill-btn" data-hr="AMER" onclick="setHistRegion('AMER',this)">AMER</button>
-            <button class="pill-btn" data-hr="APAC" onclick="setHistRegion('APAC',this)">APAC</button>
-            <button class="pill-btn" data-hr="EMEA" onclick="setHistRegion('EMEA',this)">EMEA</button>
-            <button class="pill-btn" data-hr="LATAM" onclick="setHistRegion('LATAM',this)">LATAM</button>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden;">
+        <!-- Row 1: Period · Source · Region · Split by region -->
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);width:100%;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">Period</span>
+            <select id="hist-date-select" onchange="setHistDate(this.value)" style="${ss}">
+              <option value="all">All Time</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="custom">Custom Range</option>
+            </select>
           </div>
-        </div>
-        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--text2);">Source</span>
-          <div class="pill-group" id="hist-source-pills">
-            <button class="pill-btn" data-hs="all" onclick="setHistSource('all',this)">All Sources</button>
-            <button class="pill-btn" data-hs="ib"  onclick="setHistSource('ib',this)">Inbound</button>
-            <button class="pill-btn" data-hs="ob"  onclick="setHistSource('ob',this)">Outbound</button>
+          <div id="hist-custom-dates" style="display:none;align-items:center;gap:6px;">
+            <span style="font-size:11px;color:var(--text3)">From</span>
+            <select id="hist-date-start" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
+            <span style="font-size:11px;color:var(--text3)">to</span>
+            <select id="hist-date-end" onchange="setHistCustomRange()" style="${ss}">${mopts}</select>
           </div>
+          <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:600;color:var(--text2);">Source</span>
+            <div class="pill-group" id="hist-source-pills">
+              <button class="pill-btn" data-hs="all" onclick="setHistSource('all',this)">All Sources</button>
+              <button class="pill-btn" data-hs="ib"  onclick="setHistSource('ib',this)">Inbound</button>
+              <button class="pill-btn" data-hs="ob"  onclick="setHistSource('ob',this)">Outbound</button>
+            </div>
+          </div>
+          <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+          <div id="hist-region-filter-row" style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:600;color:var(--text2);">Region</span>
+            <div class="pill-group" id="hist-region-pills">
+              <button class="pill-btn" data-hr="all"  onclick="setHistRegion('all',this)">All</button>
+              <button class="pill-btn" data-hr="AMER" onclick="setHistRegion('AMER',this)">AMER</button>
+              <button class="pill-btn" data-hr="APAC" onclick="setHistRegion('APAC',this)">APAC</button>
+              <button class="pill-btn" data-hr="EMEA" onclick="setHistRegion('EMEA',this)">EMEA</button>
+              <button class="pill-btn" data-hr="LATAM" onclick="setHistRegion('LATAM',this)">LATAM</button>
+            </div>
+          </div>
+          <button id="hist-split-region-btn" onclick="toggleHistSplitRegion(this)" class="pill-btn" style="font-size:11px;padding:4px 13px;border-radius:999px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;margin-left:auto;">Split by region</button>
         </div>
-        <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;font-weight:600;color:var(--text2);">View</span>
-          <div class="pill-group" id="hist-view-pills">
-            <button class="pill-btn" data-hv="total"  onclick="setHistView('total',this)">Total</button>
-            <button class="pill-btn" data-hv="perrep" onclick="setHistView('perrep',this)">Per SDR</button>
+        <!-- Row 2: Group by · View -->
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;width:100%;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">Group by</span>
+            <div class="pill-group" id="hist-grouptime-pills">
+              <button class="pill-btn active" data-hgt="month"   onclick="setHistGroupTime('month',this)">Month</button>
+              <button class="pill-btn"        data-hgt="quarter" onclick="setHistGroupTime('quarter',this)">Quarter</button>
+              <button class="pill-btn"        data-hgt="year"    onclick="setHistGroupTime('year',this)">Year</button>
+            </div>
+          </div>
+          <div style="width:1px;height:22px;background:var(--border);flex-shrink:0;"></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:600;color:var(--text2);">View</span>
+            <div class="pill-group" id="hist-view-pills">
+              <button class="pill-btn" data-hv="total"  onclick="setHistView('total',this)">Total</button>
+              <button class="pill-btn" data-hv="perrep" onclick="setHistView('perrep',this)">Per SDR</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1283,12 +1455,12 @@ function renderHistory() {
           <div class="hist-stat-sub" id="hist-stat-total-sub">–</div>
         </div>
         <div class="hist-stat">
-          <div class="hist-stat-label">Monthly Avg</div>
+          <div class="hist-stat-label" id="hist-stat-avg-label">Monthly Avg</div>
           <div class="hist-stat-val" id="hist-stat-avg">–</div>
-          <div class="hist-stat-sub">Per month in range</div>
+          <div class="hist-stat-sub">Per period in range</div>
         </div>
         <div class="hist-stat">
-          <div class="hist-stat-label">Best Month</div>
+          <div class="hist-stat-label" id="hist-stat-best-label">Best Month</div>
           <div class="hist-stat-val" id="hist-stat-best">–</div>
           <div class="hist-stat-sub" id="hist-stat-best-sub">–</div>
         </div>
@@ -1306,21 +1478,29 @@ function renderHistory() {
 
       <div class="hist-chart-wrap">
         <div class="hist-chart-label">
-          <span>Monthly trend</span>
+          <span id="hist-chart-title-label">Monthly trend</span>
           <div style="display:flex;align-items:center;gap:14px;">
-            <div class="hist-legend">
+            <div class="hist-legend" id="hist-total-legend">
               <span><span class="hist-legend-dot" style="background:rgba(67,97,238,0.5)"></span>Total</span>
               <span><span class="hist-legend-dot" style="background:rgba(124,58,237,0.5)"></span>Per SDR</span>
               <span><span class="hist-legend-dot" style="background:#0d9f6e;border-radius:50%"></span>Running Avg</span>
             </div>
+            <div class="hist-legend" id="hist-region-legend" style="display:none;">
+              <span><span class="hist-legend-dot" style="background:rgba(244,124,32,0.6)"></span>EMEA</span>
+              <span><span class="hist-legend-dot" style="background:rgba(43,123,123,0.6)"></span>APAC</span>
+              <span><span class="hist-legend-dot" style="background:rgba(225,29,72,0.6)"></span>AMER</span>
+              <span><span class="hist-legend-dot" style="background:rgba(101,163,13,0.6)"></span>LATAM</span>
+            </div>
             <div style="display:flex;gap:5px;">
-              <button id="hist-avg-toggle" onclick="toggleHistAvg(this)" class="pill-btn active" style="font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);">Running avg</button>
+              <span id="hist-avg-toggle-wrap">
+                <button id="hist-avg-toggle" onclick="toggleHistAvg(this)" class="pill-btn active" style="font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);">Running avg</button>
+              </span>
               <button id="hist-val-toggle" onclick="toggleHistVals(this)" class="pill-btn" style="font-size:10px;padding:3px 10px;border-radius:999px;border:1px solid var(--border);">Show values</button>
             </div>
           </div>
         </div>
-        <div style="position:relative;height:320px"><canvas id="hist-chart"></canvas></div>
-        <div class="hist-note">Bars = monthly values · Green line = running average up to that point · A bar above the line = above-avg month at the time · Toggle "Per SDR" to normalise for headcount changes.</div>
+        <div style="position:relative;height:340px"><canvas id="hist-chart"></canvas></div>
+        <div class="hist-note" id="hist-chart-note">Bars = monthly values · Green line = running average up to that point · Toggle "Per SDR" to normalise for headcount changes · Use "Group by" to view by quarter or year · "Split by region" shows EMEA / APAC / AMER / LATAM as separate bars.</div>
       </div>
     </div>`;
   syncHistFilterUI();
