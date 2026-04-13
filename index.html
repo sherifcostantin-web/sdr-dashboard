@@ -445,6 +445,7 @@ const Q2_REPS = [
       if (!rep.targets || !rep.pipe) return;
       rep.pipe.forEach(function(p, i){
         var bk = rep.targets[i] ? rep.targets[i].book : null;
+        if (!p) return;
         p.t = (bk != null && bk > 0) ? bk * 4 : undefined;
       });
     });
