@@ -439,6 +439,18 @@ const Q2_REPS = [
     pipe:    [null,null,null] },
 ];
 
+  // Pipeline targets = 4× booking targets (auto-computed)
+  [Q1_REPS, Q2_REPS].forEach(function(reps){
+    reps.forEach(function(rep){
+      if (!rep.targets || !rep.pipe) return;
+      rep.pipe.forEach(function(p, i){
+        var bk = rep.targets[i] ? rep.targets[i].book : null;
+        p.t = (bk != null && bk > 0) ? bk * 4 : undefined;
+      });
+    });
+  });
+
+
 // ── Q1 legacy bookings ────────────────────────────────────────────────────
 const Q1_LEGACY = [
   { name:'Aron',     book:[null,  61425, 840],  q1extra:9144  },
