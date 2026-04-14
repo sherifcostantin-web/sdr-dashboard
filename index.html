@@ -220,19 +220,19 @@ const Q1_REPS = [
   { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','inbound','inbound'],
     targets: [{demos:15,book:15000},{demos:null,book:15000},{demos:null,book:36000}],
-    actuals: [{demos:9, book:20877},{demos:2,   book:36742},{demos:6,   book:91743}],
+    actuals: [{demos:8, book:20877},{demos:2,   book:36743},{demos:6,   book:91788}],
     pipe:    [{t:40051,a:87203},    {t:96122,a:300171},    {t:96122,a:736000}] },
 
   { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid','inbound'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:null,book:15000}],
-    actuals: [{demos:16,book:9878}, {demos:14,book:13995},{demos:0,   book:27253}],
+    actuals: [{demos:15,book:12279},{demos:15,book:13996},{demos:0,   book:27266}],
     pipe:    [{t:107399,a:51742},   {t:107399,a:139072},  {t:107399,a:301000}] },
 
   { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','outbound','outbound'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:8000}],
-    actuals: [{demos:16,book:9142}, {demos:17,book:21173},{demos:15,book:22396}],
+    actuals: [{demos:16,book:9143}, {demos:17,book:21174},{demos:15,book:22408}],
     pipe:    [{t:69917,a:87873},    {t:40000,a:100124},   {t:40000,a:46000}] },
 
   { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, isLegacyQ1:false,
@@ -244,7 +244,7 @@ const Q1_REPS = [
   { id:'viola', name:'Viola', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   ['ramp','ramp','outbound'],
     targets: [null,{demos:10,book:null},{demos:15,book:8000}],
-    actuals: [{demos:3,book:null},  {demos:8,book:3600},  {demos:21,book:10831}],
+    actuals: [{demos:4,book:null},  {demos:8,book:3600},  {demos:21,book:10836}],
     pipe:    [null,{t:40000,a:43154},{t:40000,a:80000}] },
 
   { id:'aron', name:'Aron', region:'EMEA', gbp:false, isLegacyQ1:true,
@@ -256,7 +256,7 @@ const Q1_REPS = [
   { id:'ece', name:'Ece', region:'EMEA', gbp:false, isLegacyQ1:true,
     types:   ['hybrid',null,null],
     targets: [{demos:18,book:17250},null,null],
-    actuals: [{demos:11,book:20639},null,null],
+    actuals: [{demos:12,book:20369},null,null],
     pipe:    [null,null,null] },
 
   { id:'isa', name:'Isa', region:'EMEA', gbp:false, isLegacyQ1:false,
@@ -271,22 +271,22 @@ const Q1_REPS = [
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,{t:null,a:14000}] },
 
-  { id:'khye', name:'Khye', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'khye', name:'Khye', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
-    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
-    actuals: [{demos:14,book:6394*G}, {demos:16,book:4673*G}, {demos:16,book:12706*G}],
+    targets: [{demos:15,book:11397},{demos:15,book:11397},{demos:15,book:11397}],
+    actuals: [{demos:15,book:7518}, {demos:16,book:4020}, {demos:16,book:14619}],
     pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:157550}] },
 
-  { id:'stanly', name:'Stanly', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'stanly', name:'Stanly', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
-    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},null],
-    actuals: [{demos:6, book:7283*G}, {demos:11,book:8783*G}, null],
+    targets: [{demos:15,book:11397},{demos:15,book:11397},null],
+    actuals: [{demos:6, book:8563}, {demos:11,book:7556}, null],
     pipe:    [{t:76810,a:27552},      null,                   null] },
 
-  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   ['hybrid',null,null],
-    targets: [{demos:15,book:10000*G},null,null],
-    actuals: [{demos:9, book:3996*G}, null,null],
+    targets: [{demos:15,book:11397},null,null],
+    actuals: [{demos:12, book:5867}, {demos:0,book:2561},null],
     pipe:    [{t:76188,a:61391},      null,null] },
 
   { id:'colin', name:'Colin', region:'AMER', usd:true, isLegacyQ1:false,
@@ -384,19 +384,19 @@ const Q2_REPS = [
     actuals: [{demos:4,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [{t:null,a:16780},null,null] },
 
-  { id:'khye', name:'Khye', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'khye', name:'Khye', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
-    targets: [{demos:15,book:10000*G},{demos:15,book:10000*G},{demos:15,book:10000*G}],
+    targets: [{demos:15,book:11397},{demos:15,book:11397},{demos:15,book:11397}],
     actuals: [{demos:8,book:5781},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:66708,a:62201*G},{t:66708,a:0},{t:66708,a:0}] },
+    pipe:    [{t:66708,a:62201},{t:66708,a:0},{t:66708,a:0}] },
 
-  { id:'stanly', name:'Stanly', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'stanly', name:'Stanly', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   [null,null,null],
     targets: [null,null,null],
     actuals: [{demos:6,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,null] },
 
-  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:true, isLegacyQ1:false,
+  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   [null,null,null],
     targets: [null,null,null],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
@@ -457,9 +457,9 @@ const Q2_REPS = [
 // ── Q1 legacy bookings ────────────────────────────────────────────────────
 const Q1_LEGACY = [
   { name:'Aron',     book:[null,  61425, 840],  q1extra:9144  },
-  { name:'Ece',      book:[null,  null,  4558], q1extra:20369 },
+  { name:'Ece',      book:[null,  null,  4560], q1extra:20369 },
   { name:'Bernardo', book:[3427,  7068,  null], q1extra:0     },
-  { name:'Ilian',    book:[null,  null,  null], q1extra:0     },
+  { name:'Ilian',    book:[3917,  null,  null], q1extra:0     },
 ];
 const Q1_LEGACY_AMER  = [{ name:'Colin', book:[null,null,26959.80], q1extra:0 }];
 const Q1_LEGACY_LATAM = [{ name:'Vini',  book:[null,null,26376],    q1extra:0 }];
