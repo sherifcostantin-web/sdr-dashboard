@@ -439,7 +439,7 @@ const Q2_REPS = [
     pipe:    [null,null,null] },
 ];
 
-  // Pipeline targets = 4× booking targets (auto-computed)
+  // Pipeline targets = 4× book targets (EMEA/APAC) or 3× (AMER/LATAM), auto-computed
   try {
     [Q1_REPS, Q2_REPS].forEach(function(reps){
       reps.forEach(function(rep){
@@ -447,7 +447,7 @@ const Q2_REPS = [
         rep.pipe.forEach(function(p, i){
           if (p == null || typeof p !== 'object') return;
           var bk = rep.targets[i] ? rep.targets[i].book : null;
-          p.t = (bk != null && bk > 0) ? bk * 4 : undefined;
+          p.t = (bk != null && bk > 0) ? bk * (['AMER','LATAM'].includes(rep.region) ? 3 : 4) : undefined;
         });
       });
     });
