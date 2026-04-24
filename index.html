@@ -782,7 +782,7 @@ function buildTeamStrip(mIdx, regFilter) {
   if(regFilter.includes('EMEA')){
     for(const l of LEGACY){
       for(const i of range){if(l.book[i])bA+=l.book[i]*emult;}
-      if(mIdx===3)bA+=(l.q1extra||0)*emult;
+      // q1extra excluded—already counted in Q1_REPS actuals[0]
     }
   }
   if(regFilter.includes('AMER')){
