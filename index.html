@@ -247,16 +247,16 @@ const Q1_REPS = [
     actuals: [{demos:4,book:null},  {demos:8,book:3600},  {demos:21,book:10836}],
     pipe:    [null,{t:40000,a:43154},{t:40000,a:80000}] },
 
-  { id:'aron', name:'Aron', region:'EMEA', gbp:false, isLegacyQ1:true,
+  { id:'aron', name:'Aron', region:'EMEA', gbp:false, usd:true, isLegacyQ1:true,
     types:   ['hybrid',null,null],
     targets: [{demos:18,book:17250},null,null],
-    actuals: [{demos:12,book:9144}, null,null],
+    actuals: [{demos:12,book:10510.34},null,null],
     pipe:    [null,null,null] },
 
-  { id:'ece', name:'Ece', region:'EMEA', gbp:false, isLegacyQ1:true,
+  { id:'ece', name:'Ece', region:'EMEA', gbp:false, usd:true, isLegacyQ1:true,
     types:   ['hybrid',null,null],
     targets: [{demos:18,book:17250},null,null],
-    actuals: [{demos:12,book:20369},null,null],
+    actuals: [{demos:12,book:23413.10},null,null],
     pipe:    [null,null,null] },
 
   { id:'isa', name:'Isa', region:'EMEA', gbp:false, isLegacyQ1:false,
@@ -271,22 +271,22 @@ const Q1_REPS = [
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,{t:null,a:14000}] },
 
-  { id:'khye', name:'Khye', region:'APAC', gbp:false, isLegacyQ1:false,
+  { id:'khye', name:'Khye', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
-    targets: [{demos:15,book:11397},{demos:15,book:11397},{demos:15,book:11397}],
-    actuals: [{demos:15,book:7518}, {demos:16,book:4020}, {demos:16,book:14619}],
+    targets: [{demos:15,book:13500},{demos:15,book:13500},{demos:15,book:13500}],
+    actuals: [{demos:15,book:8640.96},{demos:16,book:4621.20},{demos:16,book:16803.36}],
     pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:157550}] },
 
   { id:'stanly', name:'Stanly', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
-    targets: [{demos:15,book:11397},{demos:15,book:11397},null],
-    actuals: [{demos:6, book:8563}, {demos:11,book:7556}, null],
+    targets: [{demos:15,book:13500},{demos:15,book:13500},null],
+    actuals: [{demos:6, book:9843},  {demos:11,book:8685.60},null],
     pipe:    [{t:76810,a:27552},      null,                   null] },
 
   { id:'ruzain', name:'Ruzain', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid',null,null],
-    targets: [{demos:15,book:11397},null,null],
-    actuals: [{demos:12, book:5867}, {demos:0,book:2561},null],
+    targets: [{demos:15,book:13500},null,null],
+    actuals: [{demos:12, book:6744},  {demos:0,book:2944.08},null],
     pipe:    [{t:76188,a:61391},      null,null] },
 
   { id:'colin', name:'Colin', region:'AMER', usd:true, isLegacyQ1:false,
@@ -298,13 +298,13 @@ const Q1_REPS = [
   { id:'darya', name:'Darya', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
-    actuals: [{demos:7,book:7062.60},{demos:7,book:21152.50},{demos:2,book:19140}],
+    actuals: [{demos:7,book:7062.60},{demos:7,book:21152.50},{demos:2,book:20928}],
     pipe:    [{a:53793},{a:62109},{a:44186}] },
 
   { id:'nickv', name:'Nick V', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
-    actuals: [{demos:0,book:54425.40},{demos:5,book:32195.28},{demos:2,book:22111.80}],
+    actuals: [{demos:0,book:54425.40},{demos:5,book:32195.28},{demos:2,book:23911.80}],
     pipe:    [{a:263342},{a:56957},{a:74012}] },
 
   { id:'nickm', name:'Nick M', region:'AMER', usd:true, isLegacyQ1:false,
@@ -462,13 +462,13 @@ const Q2_REPS = [
 
 // ── Q1 legacy bookings ────────────────────────────────────────────────────
 const Q1_LEGACY = [
-  { name:'Aron',     book:[null,  61425, 840],  q1extra:9144  },
-  { name:'Ece',      book:[null,  null,  4560], q1extra:20369 },
-  { name:'Bernardo', book:[3427,  7068,  null], q1extra:0     },
-  { name:'Ilian',    book:[3917,  null,  null], q1extra:0     },
+  { name:'Aron',     book:[null,  70603.45, 965.52], q1extra:10510.34 },
+  { name:'Ece',      book:[null,  null,  5241.38], q1extra:23413.10 },
+  { name:'Bernardo', book:[3939.31, 8124.14, null], q1extra:0 },
+  { name:'Ilian',    book:[4502.07, null, null], q1extra:0    },
 ];
 const Q1_LEGACY_AMER  = [{ name:'Colin', book:[null,null,26959.80], q1extra:0 }];
-const Q1_LEGACY_LATAM = [{ name:'Vini',  book:[null,null,26376],    q1extra:0 }];
+const Q1_LEGACY_LATAM = [{ name:'Vini',  book:[null,null,26376.05], q1extra:0 }];
 
 // Seth List (AMER manager) — Q1 March pipeline only
 const Q1_MANAGER_PIPE = { AMER: [null, null, 8050] };
