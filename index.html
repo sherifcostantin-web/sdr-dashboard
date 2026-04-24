@@ -217,34 +217,34 @@ function wdPassedQ() {
 
 // ── Q1 2026 REPS — arrays are [Jan, Feb, Mar] — FINAL CLOSED NUMBERS ────────
 const Q1_REPS = [
-  { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'loic', name:'Loic', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','inbound','inbound'],
-    targets: [{demos:15,book:15000},{demos:null,book:15000},{demos:null,book:36000}],
-    actuals: [{demos:8, book:20877},{demos:2,   book:36743},{demos:6,   book:91788}],
+    targets: [{demos:15,book:17250},{demos:null,book:17250},{demos:null,book:41400}],
+    actuals: [{demos:8, book:23996.55},{demos:2,   book:42232.99},{demos:6,   book:105504}],
     pipe:    [{t:40051,a:87203},    {t:96122,a:300171},    {t:96122,a:736000}] },
 
-  { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'majd', name:'Majd', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','inbound'],
-    targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:null,book:15000}],
-    actuals: [{demos:15,book:12279},{demos:15,book:13996},{demos:0,   book:27266}],
+    targets: [{demos:15,book:17250},{demos:15,book:17250},{demos:null,book:17250}],
+    actuals: [{demos:15,book:14113.74},{demos:15,book:16086.99},{demos:0,   book:31340.65}],
     pipe:    [{t:107399,a:51742},   {t:107399,a:139072},  {t:107399,a:301000}] },
 
-  { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','outbound','outbound'],
-    targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:8000}],
-    actuals: [{demos:16,book:9143}, {demos:17,book:21174},{demos:15,book:22408}],
+    targets: [{demos:15,book:17250},{demos:15,book:9300},{demos:15,book:9300}],
+    actuals: [{demos:16,book:10508.97},{demos:17,book:24337.66},{demos:15,book:25756.44}],
     pipe:    [{t:69917,a:87873},    {t:40000,a:100124},   {t:40000,a:46000}] },
 
   { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','outbound',null],
-    targets: [{demos:15,book:15000},{demos:15,book:15000},null],
-    actuals: [{demos:14,book:17412},{demos:10,book:21246},null],
+    targets: [{demos:15,book:17250},{demos:15,book:17250},null],
+    actuals: [{demos:14,book:20013.74},{demos:10,book:24420.69},null],
     pipe:    [{t:69917,a:79883},    {t:40000,a:91855},    null] },
 
-  { id:'viola', name:'Viola', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'viola', name:'Viola', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['ramp','ramp','outbound'],
-    targets: [null,{demos:10,book:null},{demos:15,book:8000}],
-    actuals: [{demos:4,book:null},  {demos:8,book:3600},  {demos:21,book:10836}],
+    targets: [null,{demos:10,book:null},{demos:15,book:9300}],
+    actuals: [{demos:4,book:null},  {demos:8,book:4137.93},{demos:21,book:12455.17}],
     pipe:    [null,{t:40000,a:43154},{t:40000,a:80000}] },
 
   { id:'aron', name:'Aron', region:'EMEA', gbp:false, usd:true, isLegacyQ1:true,
