@@ -98,6 +98,26 @@
   .hist-stat-val{font-size:18px;font-weight:700;line-height:1;}
   .hist-stat-sub{font-size:11px;color:var(--text2);margin-top:3px;}
   .hist-note{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;}
+  /* ── SDR Headcount page ─────────────────────────────────────────── */
+  .hc-wrap{padding:8px 0 24px;}
+  .hc-definition{background:#fff8f2;border-left:4px solid #F47C20;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.6;color:var(--text2);}
+  .hc-definition strong{color:var(--text);font-weight:600;}
+  .hc-controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;}
+  .hc-controls .pill-group{box-shadow:none;border-color:var(--border);}
+  .hc-section-label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);margin-right:2px;}
+  .hc-table-wrap{overflow-x:auto;}
+  .hc-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .hc-table thead th{font-size:11px;font-weight:600;color:var(--text3);text-align:right;padding:7px 12px;border-bottom:2px solid var(--border);text-transform:uppercase;letter-spacing:.04em;}
+  .hc-table thead th:first-child{text-align:left;}
+  .hc-table tbody td{padding:7px 12px;text-align:right;border-bottom:1px solid var(--bg);color:var(--text);}
+  .hc-table tbody td:first-child{text-align:left;font-weight:500;}
+  .hc-table tbody tr:hover td{background:#fafafa;}
+  .hc-table .yr-group td{background:var(--bg);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:5px 12px;}
+  .hc-table .q2-live td{background:#fff8f2;color:#b85000;}
+  .hc-table .q2-live td:first-child::after{content:" ↗";font-size:10px;opacity:.6;}
+  .hc-val-zero{color:var(--text3);}
+  .hc-legend{font-size:11px;color:var(--text3);margin-top:12px;font-style:italic;}
+
   @media(max-width:640px){.cards-grid{grid-template-columns:1fr;}.team-strip{grid-template-columns:1fr;}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -138,12 +158,14 @@
       <div class="pill-group" id="view-pills">
         <button class="pill-btn active" onclick="setView('live',this)">Live</button>
         <button class="pill-btn" onclick="setView('history',this)">Historical</button>
+        <button class="pill-btn" onclick="setView('headcount',this)">SDR Headcount</button>
       </div>
     </div>
   </div>
   <div id="team-strip"></div>
   <div id="cards-container"></div>
   <div id="history-container" style="display:none"></div>
+  <div id="headcount-container" style="display:none"></div>
 </div>
 
 <script>
@@ -853,14 +875,18 @@ function setView(v, el) {
   VIEW = v;
   document.querySelectorAll('#view-pills .pill-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const isHistory = v === 'history';
-  document.getElementById('quarter-pills').style.visibility = isHistory ? 'hidden' : '';
-  document.getElementById('month-pills').style.display = isHistory ? 'none' : '';
-  document.getElementById('region-pills').style.display = isHistory ? 'none' : '';
-  document.getElementById('team-strip').style.display = isHistory ? 'none' : '';
-  document.getElementById('cards-container').style.display = isHistory ? 'none' : '';
-  document.getElementById('history-container').style.display = isHistory ? '' : 'none';
-  if(isHistory) renderHistory();
+  const isHistory   = v === 'history';
+  const isHeadcount = v === 'headcount';
+  const isLive      = v === 'live';
+  document.getElementById('quarter-pills').style.visibility = isLive ? '' : 'hidden';
+  document.getElementById('month-pills').style.display      = isLive ? '' : 'none';
+  document.getElementById('region-pills').style.display     = isLive ? '' : 'none';
+  document.getElementById('team-strip').style.display       = isLive ? '' : 'none';
+  document.getElementById('cards-container').style.display  = isLive ? '' : 'none';
+  document.getElementById('history-container').style.display   = isHistory   ? '' : 'none';
+  document.getElementById('headcount-container').style.display = isHeadcount ? '' : 'none';
+  if(isHistory)   renderHistory();
+  if(isHeadcount) renderHeadcount();
 }
 
 function updateMonthPills() {
@@ -923,7 +949,7 @@ const HIST_BOOK = [
   {m:"Dec'25",total:194129,r:15,r_ib:15,r_ob:15,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:69016,APAC:24921,EMEA:95571,LATAM:4621,ib:132870,ob:61259,AMER_ib:54123,AMER_ob:14893,APAC_ib:16866,APAC_ob:8055,EMEA_ib:57260,EMEA_ob:38311,LATAM_ib:4621,LATAM_ob:0},
   {m:"Jan'26",total:260056,r:14,r_ib:14,r_ob:14,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:78504,APAC:25228,EMEA:110998,LATAM:45326,ib:162970,ob:92584,AMER_ib:74217,AMER_ob:4287,APAC_ib:10498,APAC_ob:14730,EMEA_ib:62756,EMEA_ob:43740,LATAM_ib:15499,LATAM_ob:29827},
   {m:"Feb'26",total:327844,r:11,r_ib:9,r_ob:10,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:3,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:69872,APAC:13307,EMEA:189944,LATAM:54722,ib:256926,ob:70918,AMER_ib:66767,AMER_ob:3104,APAC_ib:8064,APAC_ob:5243,EMEA_ib:149845,EMEA_ob:40099,LATAM_ib:32250,LATAM_ob:22472},
-  {m:"Mar'26",total:351894,r:10,r_ib:8,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:4,r_AMER_ib:4,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:75298,APAC:16803,EMEA:181263,LATAM:78530,ib:293550,ob:54756,AMER_ib:63543,AMER_ob:8167,APAC_ib:12615,APAC_ob:4188,EMEA_ib:143052,EMEA_ob:38211,LATAM_ib:74340,LATAM_ob:4190},
+  {m:"Mar'26",total:351894,r:9,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:75298,APAC:16803,EMEA:181263,LATAM:78530,ib:293550,ob:54756,AMER_ib:63543,AMER_ob:8167,APAC_ib:12615,APAC_ob:4188,EMEA_ib:143052,EMEA_ob:38211,LATAM_ib:74340,LATAM_ob:4190},
 ];
 const HIST_PIPE = [
   {m:"Jan'24",total:832136,r:11,r_ib:11,r_ob:9,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:5,r_APAC:0,r_APAC_ib:0,r_APAC_ob:0,r_AMER:4,r_AMER_ib:4,r_AMER_ob:4,r_LATAM:0,r_LATAM_ib:0,r_LATAM_ob:0,AMER:62146,APAC:0,EMEA:401495,LATAM:0,ib:359137,ob:472999,AMER_ib:23209,AMER_ob:38937,APAC_ib:0,APAC_ob:0,EMEA_ib:114194,EMEA_ob:287301,LATAM_ib:0,LATAM_ob:0},
@@ -952,7 +978,7 @@ const HIST_PIPE = [
   {m:"Dec'25",total:1054190,r:15,r_ib:15,r_ob:15,r_EMEA:7,r_EMEA_ib:7,r_EMEA_ob:7,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:192563,APAC:152652,EMEA:610410,LATAM:98564,ib:540490,ob:513700,AMER_ib:172649,AMER_ob:19914,APAC_ib:63906,APAC_ob:88746,EMEA_ib:249299,EMEA_ob:361111,LATAM_ib:54636,LATAM_ob:43928},
   {m:"Jan'26",total:1558863,r:14,r_ib:14,r_ob:14,r_EMEA:6,r_EMEA_ib:6,r_EMEA_ob:6,r_APAC:3,r_APAC_ib:3,r_APAC_ob:3,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:365154,APAC:166011,EMEA:824392,LATAM:203306,ib:1148613,ob:387720,AMER_ib:360390,AMER_ob:6204,APAC_ib:56156,APAC_ob:101682,EMEA_ib:595238,EMEA_ob:213356,LATAM_ib:136829,LATAM_ob:66478},
   {m:"Feb'26",total:1311509,r:11,r_ib:9,r_ob:10,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:3,r_APAC:2,r_APAC_ib:2,r_APAC_ob:2,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:2,r_LATAM_ib:2,r_LATAM_ob:2,AMER:271151,APAC:110467,EMEA:753293,LATAM:176598,ib:802978,ob:496043,AMER_ib:233071,AMER_ob:41566,APAC_ib:58448,APAC_ob:34061,EMEA_ib:461084,EMEA_ob:294207,LATAM_ib:50376,LATAM_ob:126210},
-  {m:"Mar'26",total:1920165,r:10,r_ib:8,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:4,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:233364,APAC:207243,EMEA:1165769,LATAM:313789,ib:1668863,ob:493562,AMER_ib:179235,AMER_ob:54787,APAC_ib:124910,APAC_ob:83855,EMEA_ib:1224164,EMEA_ob:187674,LATAM_ib:140553,LATAM_ob:167246},
+  {m:"Mar'26",total:1920165,r:9,r_ib:7,r_ob:7,r_EMEA:4,r_EMEA_ib:2,r_EMEA_ob:2,r_APAC:1,r_APAC_ib:1,r_APAC_ob:1,r_AMER:3,r_AMER_ib:3,r_AMER_ob:3,r_LATAM:1,r_LATAM_ib:1,r_LATAM_ob:1,AMER:233364,APAC:207243,EMEA:1165769,LATAM:313789,ib:1668863,ob:493562,AMER_ib:179235,AMER_ob:54787,APAC_ib:124910,APAC_ob:83855,EMEA_ib:1224164,EMEA_ob:187674,LATAM_ib:140553,LATAM_ob:167246},
 ];
 
 // ── Historical filter state ────────────────────────────────────────────────
@@ -1594,6 +1620,190 @@ document.getElementById('lu-date').textContent=new Date().toLocaleDateString('en
 updateMonthPills();
 buildWdStatus();
 render();
+// ═══════════════════════════════════════════════════════════════════════════
+// SDR HEADCOUNT PAGE
+// ═══════════════════════════════════════════════════════════════════════════
+
+let hcPeriod  = 'month';  // 'month' | 'quarter' | 'year'
+let hcSource  = 'all';    // 'all' | 'ib' | 'ob'
+let hcRegion  = 'all';    // 'all' | 'EMEA' | 'APAC' | 'AMER' | 'LATAM'
+
+// Compute QC headcount rows from Q2_REPS for Apr/May/Jun 2026
+function computeQ2QCRows() {
+  const MONTHS = [{m:"Apr'26",idx:0},{m:"May'26",idx:1},{m:"Jun'26",idx:2}];
+  return MONTHS.map(({m, idx}) => {
+    const row = {
+      m, isQ2Live: true,
+      r:0, r_ib:0, r_ob:0,
+      r_EMEA:0, r_EMEA_ib:0, r_EMEA_ob:0,
+      r_APAC:0, r_APAC_ib:0, r_APAC_ob:0,
+      r_AMER:0, r_AMER_ib:0, r_AMER_ob:0,
+      r_LATAM:0, r_LATAM_ib:0, r_LATAM_ob:0
+    };
+    Q2_REPS.forEach(rep => {
+      if (rep.id === 'seth') return;
+      const t  = rep.targets[idx];
+      const ty = rep.types[idx];
+      if (!t || !t.book || ty === 'ramp' || ty === null) return;
+      const reg = rep.region;
+      const isIB = ty === 'inbound'  || ty === 'hybrid';
+      const isOB = ty === 'outbound' || ty === 'hybrid';
+      row['r_' + reg]++;
+      row.r++;
+      if (isIB) { row['r_' + reg + '_ib']++; row.r_ib++; }
+      if (isOB) { row['r_' + reg + '_ob']++; row.r_ob++; }
+    });
+    return row;
+  });
+}
+
+// Aggregate monthly rows into quarters or years (avg headcount, label = period key)
+function groupHCData(rows) {
+  if (hcPeriod === 'month') return rows;
+  const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const R_FIELDS = ['r','r_ib','r_ob','r_EMEA','r_EMEA_ib','r_EMEA_ob',
+    'r_APAC','r_APAC_ib','r_APAC_ob','r_AMER','r_AMER_ib','r_AMER_ob','r_LATAM','r_LATAM_ib','r_LATAM_ob'];
+  const groups = {}, order = [];
+  rows.forEach(d => {
+    const mn = d.m.slice(0,3), yr = d.m.slice(4);
+    const mi = MO.indexOf(mn);
+    const key = hcPeriod === 'quarter'
+      ? 'Q' + (Math.floor(mi/3)+1) + "'" + yr
+      : '20' + yr;
+    if (!groups[key]) {
+      const g = {m: key, _n:0, isQ2Live: false};
+      R_FIELDS.forEach(k => g[k] = 0);
+      groups[key] = g; order.push(key);
+    }
+    const g = groups[key];
+    R_FIELDS.forEach(k => { g[k] += (d[k] || 0); });
+    if (d.isQ2Live) g.isQ2Live = true;
+    g._n++;
+  });
+  order.forEach(k => {
+    const g = groups[k];
+    R_FIELDS.forEach(fk => { g[fk] = Math.round((g[fk] / g._n) * 10) / 10; });
+  });
+  return order.map(k => groups[k]);
+}
+
+function getHCVal(row, region) {
+  const prefix = region === 'all' ? 'r' : 'r_' + region;
+  if (hcSource === 'ib') return row[prefix + '_ib'] ?? row[prefix] ?? 0;
+  if (hcSource === 'ob') return row[prefix + '_ob'] ?? row[prefix] ?? 0;
+  return row[prefix] ?? 0;
+}
+
+function fmtHCVal(v) {
+  if (v === 0) return '<span class="hc-val-zero">—</span>';
+  return Number.isInteger(v) ? v : v.toFixed(1);
+}
+
+function setHCPeriod(p, el) {
+  hcPeriod = p;
+  document.querySelectorAll('#hc-period-pills .pill-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderHeadcount();
+}
+
+function setHCSource(s, el) {
+  hcSource = s;
+  document.querySelectorAll('#hc-source-pills .pill-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderHeadcount();
+}
+
+function setHCRegion(r, el) {
+  hcRegion = r;
+  document.querySelectorAll('#hc-region-pills .pill-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderHeadcount();
+}
+
+function renderHeadcount() {
+  const q2rows  = computeQ2QCRows();
+  const allRows = [...HIST_BOOK, ...q2rows];
+  const grouped = groupHCData(allRows);
+
+  // Determine which columns to show based on hcRegion filter
+  const ALL_REGIONS = ['EMEA','APAC','AMER','LATAM'];
+  const visibleRegions = hcRegion === 'all' ? ALL_REGIONS : [hcRegion];
+  const showGlobal = hcRegion === 'all';
+
+  // Year grouping labels for visual separators (only in month/quarter view)
+  const showYrGroups = hcPeriod !== 'year';
+  let lastYr = null;
+
+  const colSpan = (showGlobal ? 1 : 0) + visibleRegions.length + 1; // +1 for Period col
+
+  const tbody = grouped.map(row => {
+    const mn = row.m.slice(0,3), yr = row.m.slice(4);
+    let out = '';
+    if (showYrGroups) {
+      const thisYr = hcPeriod === 'month' ? '20'+yr : row.m.slice(-2);
+      if (thisYr !== lastYr) {
+        lastYr = thisYr;
+        out += `<tr class="yr-group"><td colspan="${colSpan}">20${thisYr.length === 2 ? thisYr : thisYr.slice(2)}</td></tr>`;
+      }
+    }
+    const rowClass = row.isQ2Live ? 'q2-live' : '';
+    const globalCell = showGlobal ? `<td>${fmtHCVal(getHCVal(row, 'all'))}</td>` : '';
+    const regionCells = visibleRegions.map(r => `<td>${fmtHCVal(getHCVal(row, r))}</td>`).join('');
+    out += `<tr class="${rowClass}">
+      <td>${row.m}</td>
+      ${globalCell}${regionCells}
+    </tr>`;
+    return out;
+  }).join('');
+
+  const sourceLabel = hcSource === 'ib' ? ' (Inbound)' : hcSource === 'ob' ? ' (Outbound)' : '';
+  const globalHeader = showGlobal ? `<th>Global${sourceLabel}</th>` : '';
+  const regionHeaders = visibleRegions.map(r => `<th>${r}${sourceLabel}</th>`).join('');
+
+  document.getElementById('headcount-container').innerHTML = `
+    <div class="hc-wrap">
+      <div class="hc-definition">
+        <strong>What is a Quota Carrying SDR?</strong><br>
+        A Quota Carrying (QC) SDR is a rep who holds a full non-ramped monthly target. For new hires this takes into effect from Month 3. Inbound and Outbound counts reflect role type — hybrid reps contribute +1 to both.
+      </div>
+      <div class="hc-controls">
+        <span class="hc-section-label">Period</span>
+        <div class="pill-group" id="hc-period-pills">
+          <button class="pill-btn${hcPeriod==='month'?' active':''}" onclick="setHCPeriod('month',this)">Monthly</button>
+          <button class="pill-btn${hcPeriod==='quarter'?' active':''}" onclick="setHCPeriod('quarter',this)">Quarterly</button>
+          <button class="pill-btn${hcPeriod==='year'?' active':''}" onclick="setHCPeriod('year',this)">Yearly</button>
+        </div>
+        <span class="hc-section-label" style="margin-left:8px">Show</span>
+        <div class="pill-group" id="hc-source-pills">
+          <button class="pill-btn${hcSource==='all'?' active':''}" onclick="setHCSource('all',this)">Total</button>
+          <button class="pill-btn${hcSource==='ib'?' active':''}" onclick="setHCSource('ib',this)">Inbound</button>
+          <button class="pill-btn${hcSource==='ob'?' active':''}" onclick="setHCSource('ob',this)">Outbound</button>
+        </div>
+        <span class="hc-section-label" style="margin-left:8px">Region</span>
+        <div class="pill-group" id="hc-region-pills">
+          <button class="pill-btn${hcRegion==='all'?' active':''}" onclick="setHCRegion('all',this)">All</button>
+          <button class="pill-btn${hcRegion==='EMEA'?' active':''}" onclick="setHCRegion('EMEA',this)">EMEA</button>
+          <button class="pill-btn${hcRegion==='APAC'?' active':''}" onclick="setHCRegion('APAC',this)">APAC</button>
+          <button class="pill-btn${hcRegion==='AMER'?' active':''}" onclick="setHCRegion('AMER',this)">AMER</button>
+          <button class="pill-btn${hcRegion==='LATAM'?' active':''}" onclick="setHCRegion('LATAM',this)">LATAM</button>
+        </div>
+      </div>
+      <div class="hc-table-wrap">
+        <table class="hc-table">
+          <thead>
+            <tr>
+              <th>Period</th>
+              ${globalHeader}${regionHeaders}
+            </tr>
+          </thead>
+          <tbody>${tbody}</tbody>
+        </table>
+      </div>
+      <div class="hc-legend">↗ Orange rows = Q2 2026 live data computed from active rep cards &nbsp;·&nbsp; All other rows from locked historical records &nbsp;·&nbsp; Quarterly/yearly figures are averages across months</div>
+    </div>
+  `;
+}
+
 </script>
 </body>
 </html>
