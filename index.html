@@ -719,8 +719,8 @@ function buildLegacyBox(mIdx, region) {
       const total=rows.reduce((s,r)=>s+r.val,0);
       html+=`<div class="legacy-box">
         <div class="legacy-box-title">Legacy SDR Bookings · EMEA</div>
-        ${rows.map(r=>`<div class="legacy-row-item"><span style="font-size:12px;color:var(--text2)">${r.name}</span><span style="font-size:12px;font-weight:600">${fmtE(r.val,true)}</span></div>`).join('')}
-        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?QUARTER_LABEL+' Total':'Total'}</span><span class="legacy-total-val">${fmtE(total,true)}</span></div>
+        ${rows.map(r=>`<div class="legacy-row-item"><span style="font-size:12px;color:var(--text2)">${r.name}</span><span style="font-size:12px;font-weight:600">${fmtU(r.val,true)}</span></div>`).join('')}
+        <div class="legacy-total-row"><span class="legacy-total-label">${isQ1?QUARTER_LABEL+' Total':'Total'}</span><span class="legacy-total-val">${fmtU(total,true)}</span></div>
       </div>`;
     }
   }
@@ -777,7 +777,7 @@ function buildTeamStrip(mIdx, regFilter) {
   if(regFilter.includes('EMEA')){
     for(const i of range) dT+=TEAM_DEMO_ADJ[i]||0;
   }
-  const emult=useUSD?EUR_USD:1;
+  const emult=1; // Q1_LEGACY values stored in USD
   const umult=useUSD?1:(1/EUR_USD);
   if(regFilter.includes('EMEA')){
     for(const l of LEGACY){
