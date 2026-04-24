@@ -235,7 +235,7 @@ const Q1_REPS = [
     actuals: [{demos:16,book:9143}, {demos:17,book:21174},{demos:15,book:22408}],
     pipe:    [{t:69917,a:87873},    {t:40000,a:100124},   {t:40000,a:46000}] },
 
-  { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','outbound',null],
     targets: [{demos:15,book:15000},{demos:15,book:15000},null],
     actuals: [{demos:14,book:17412},{demos:10,book:21246},null],
@@ -277,13 +277,13 @@ const Q1_REPS = [
     actuals: [{demos:15,book:7518}, {demos:16,book:4020}, {demos:16,book:14619}],
     pipe:    [{t:66708,a:63244},      {t:66708,a:42774},      {t:66708,a:157550}] },
 
-  { id:'stanly', name:'Stanly', region:'APAC', gbp:false, isLegacyQ1:false,
+  { id:'stanly', name:'Stanly', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid',null],
     targets: [{demos:15,book:11397},{demos:15,book:11397},null],
     actuals: [{demos:6, book:8563}, {demos:11,book:7556}, null],
     pipe:    [{t:76810,a:27552},      null,                   null] },
 
-  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:false, isLegacyQ1:false,
+  { id:'ruzain', name:'Ruzain', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid',null,null],
     targets: [{demos:15,book:11397},null,null],
     actuals: [{demos:12, book:5867}, {demos:0,book:2561},null],
@@ -328,23 +328,23 @@ const Q1_REPS = [
 
 // ── Q2 2026 REPS — arrays are [Apr, May, Jun] ────────────────────────────
 const Q2_REPS = [
-  { id:'loic', name:'Loic', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'loic', name:'Loic', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['inbound','inbound','inbound'],
-    targets: [{demos:null,book:22000},{demos:null,book:29000},{demos:null,book:32500}],
-    actuals: [{demos:2,book:36287},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:96122,a:167562},{t:96122,a:0},{t:96122,a:0}] },
+    targets: [{demos:null,book:25300},{demos:null,book:33350},{demos:null,book:37375}],
+    actuals: [{demos:2,book:41730},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:179593},{a:0},{a:0}] },
 
-  { id:'majd', name:'Majd', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'majd', name:'Majd', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['inbound','inbound','inbound'],
-    targets: [{demos:null,book:22000},{demos:null,book:29000},{demos:null,book:32500}],
-    actuals: [{demos:0,book:59202},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:107399,a:147089},{t:107399,a:0},{t:107399,a:0}] },
+    targets: [{demos:null,book:25300},{demos:null,book:33350},{demos:null,book:37375}],
+    actuals: [{demos:0,book:68082},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:161044},{a:0},{a:0}] },
 
-  { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'yannis', name:'Yannis', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['outbound','outbound','outbound'],
-    targets: [{demos:15,book:8000},{demos:15,book:8000},{demos:15,book:8000}],
-    actuals: [{demos:9,book:3598},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:40000,a:60529},{t:40000,a:0},{t:40000,a:0}] },
+    targets: [{demos:15,book:9200},{demos:15,book:9200},{demos:15,book:9200}],
+    actuals: [{demos:9,book:4138},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:69608},{a:0},{a:0}] },
 
   { id:'aissa', name:'Aissa', region:'EMEA', gbp:false, isLegacyQ1:false,
     types:   [null,null,null],
@@ -352,43 +352,43 @@ const Q2_REPS = [
     actuals: [{demos:2,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,null] },
 
-  { id:'viola', name:'Viola', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'viola', name:'Viola', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['outbound','outbound','outbound'],
-    targets: [{demos:15,book:8000},{demos:15,book:8000},{demos:15,book:8000}],
-    actuals: [{demos:10,book:26412},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:40000,a:99862},{t:40000,a:0},{t:40000,a:0}] },
+    targets: [{demos:15,book:9200},{demos:15,book:9200},{demos:15,book:9200}],
+    actuals: [{demos:10,book:30374},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:114841},{a:0},{a:0}] },
 
-  { id:'aron', name:'Aron', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'aron', name:'Aron', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   [null,null,null],
     targets: [null,null,null],
     actuals: [{demos:1,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,null] },
 
-  { id:'ece', name:'Ece', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'ece', name:'Ece', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   [null,null,null],
     targets: [null,null,null],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,null] },
 
   // Isa: ramp April → full hybrid from May
-  { id:'isa', name:'Isa', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'isa', name:'Isa', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['ramp','hybrid','hybrid'],
-    targets: [{demos:10,book:null},{demos:15,book:15000},{demos:15,book:15000}],
-    actuals: [{demos:4,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:null,a:49716},null,null] },
+    targets: [{demos:10,book:null},{demos:15,book:17250},{demos:15,book:17250}],
+    actuals: [{demos:3,book:0},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:57173},null,null] },
 
   // Valeria: same ramp → full ramp-up as Isa
-  { id:'valeria', name:'Valeria', region:'EMEA', gbp:false, isLegacyQ1:false,
+  { id:'valeria', name:'Valeria', region:'EMEA', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['ramp','hybrid','hybrid'],
-    targets: [{demos:10,book:null},{demos:15,book:15000},{demos:15,book:15000}],
+    targets: [{demos:10,book:null},{demos:15,book:17250},{demos:15,book:17250}],
     actuals: [{demos:9,book:0},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:null,a:50327},null,null] },
+    pipe:    [{a:57876},null,null] },
 
-  { id:'khye', name:'Khye', region:'APAC', gbp:false, isLegacyQ1:false,
+  { id:'khye', name:'Khye', region:'APAC', gbp:false, usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
-    targets: [{demos:15,book:11397},{demos:15,book:11397},{demos:15,book:11397}],
-    actuals: [{demos:17,book:22169},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{t:66708,a:97076},{t:66708,a:0},{t:66708,a:0}] },
+    targets: [{demos:15,book:13500},{demos:15,book:13500},{demos:15,book:13500}],
+    actuals: [{demos:16,book:25494},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:103838},{a:0},{a:0}] },
 
   { id:'stanly', name:'Stanly', region:'APAC', gbp:false, isLegacyQ1:false,
     types:   [null,null,null],
@@ -418,25 +418,31 @@ const Q2_REPS = [
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
     actuals: [{demos:2,book:5388},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{a:72096},{a:0},{a:0}] },
+    pipe:    [{a:61692},{a:0},{a:0}] },
 
   { id:'nickm', name:'Nick M', region:'AMER', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:45000},{demos:15,book:45000},{demos:15,book:45000}],
     actuals: [{demos:0,book:3350},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{a:89268},{a:0},{a:0}] },
+    pipe:    [{a:78726},{a:0},{a:0}] },
 
   { id:'gleice', name:'Gleice', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   ['hybrid','hybrid','hybrid'],
     targets: [{demos:15,book:15000},{demos:15,book:15000},{demos:15,book:15000}],
-    actuals: [{demos:12,book:6759},{demos:0,book:0},{demos:0,book:0}],
-    pipe:    [{a:40427},{a:0},{a:0}] },
+    actuals: [{demos:13,book:1788},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:44243},{a:0},{a:0}] },
 
   { id:'vini', name:'Vini', region:'LATAM', usd:true, isLegacyQ1:false,
     types:   [null,null,null],
     targets: [null,null,null],
     actuals: [{demos:0,book:0},{demos:0,book:0},{demos:0,book:0}],
     pipe:    [null,null,null] },
+
+  { id:'seth', name:'Seth', region:'AMER', usd:true, isLegacyQ1:false,
+    types:   ['hybrid','hybrid','hybrid'],
+    targets: [null,null,null],
+    actuals: [{demos:0,book:1565},{demos:0,book:0},{demos:0,book:0}],
+    pipe:    [{a:190719},{a:0},{a:0}] },
 ];
 
   // Pipeline targets = 4× book targets (EMEA/APAC) or 3× (AMER/LATAM), auto-computed
@@ -469,9 +475,9 @@ const Q1_MANAGER_PIPE = { AMER: [null, null, 8050] };
 
 // ── Q2 legacy bookings (empty — fresh quarter) ────────────────────────────
 const Q2_LEGACY       = [];
-const Q2_LEGACY_AMER  = [{ name:'Seth', book:[1565,0,0], q1extra:0 }];
+const Q2_LEGACY_AMER  = [];
 const Q2_LEGACY_LATAM = [];
-const Q2_MANAGER_PIPE = { AMER: [null, null, null] };
+const Q2_MANAGER_PIPE = {};
 
 // ── Mutable active REPS/legacy pointers (start on Q2) ─────────────────────
 let REPS         = Q2_REPS;
@@ -488,7 +494,7 @@ function fmtE(v, full=false) {
   if(v==null||v===0) return '–';
   if(full) return '€'+Math.round(v).toLocaleString('en-GB');
   if(v>=1e6) return '€'+(v/1e6).toFixed(1)+'M';
-  if(v>=1000) return '€'+Math.round(v/1000)+'k';
+  if(v>=1000) return '€'+parseFloat((v/1000).toFixed(1))+'k';
   return '€'+Math.round(v);
 }
 function fmtG(v, full=false) {
@@ -502,7 +508,7 @@ function fmtU(v, full=false) {
   if(v==null||v===0) return '–';
   if(full) return '$'+Math.round(v).toLocaleString('en-GB');
   if(v>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
-  if(v>=1000) return '$'+Math.round(v/1000)+'k';
+  if(v>=1000) return '$'+parseFloat((v/1000).toFixed(1))+'k';
   return '$'+Math.round(v);
 }
 function ach(a,t){ return(!t||a==null)?null:a/t; }
@@ -671,7 +677,7 @@ function buildCard(rep, mIdx) {
       if(bT!=null) body+=metricBlock('Bookings',bA,bT,ach(bA,bT),pac(bA,bT,wdf),wdf,fmtFn);
       else body+=noTargetBlock('Bookings');
       body+=`<div class="metric-divider"></div>`;
-      body+=noTargetBlock('Pipeline (CM)');
+      body+=pipeBlock(p,wdf,fmtFn);
     } else {
       const dT=t?t.demos:null,dA=(a&&a.demos!=null)?a.demos:0;
       const bT=t?t.book:null, bA=a?a.book:null;
@@ -752,7 +758,7 @@ function buildLegacyBox(mIdx, region) {
 }
 
 function buildTeamStrip(mIdx, regFilter) {
-  const useUSD=regFilter.some(r=>['AMER','LATAM'].includes(r));
+  const useUSD=regFilter.some(r=>['AMER','LATAM'].includes(r))||REPS.filter(rep=>regFilter.includes(rep.region)).some(rep=>rep.usd);
   const range=mIdx===3?[0,1,2]:[mIdx];
   let dA=0,dT=0,bA=0,bT=0,pA=0,pT=0,pAnt=0;
   for(const r of REPS.filter(rep=>regFilter.includes(rep.region))){
@@ -765,7 +771,7 @@ function buildTeamStrip(mIdx, regFilter) {
       if(t&&t.demos!=null)dT+=t.demos;
       if(t&&t.book!=null) bT+=t.book*mult;
       if(ty!=='ramp'&&p&&p.t){pT+=p.t*mult;pA+=(p.a||0)*mult;}
-      else if(ty!=='ramp'&&p&&p.a) pAnt+=(p.a||0)*mult;
+      else if(p&&p.a) pAnt+=(p.a||0)*mult;
     }
   }
   if(regFilter.includes('EMEA')){
@@ -810,7 +816,7 @@ function buildTeamStrip(mIdx, regFilter) {
     <div class="tc-label">Pipeline · ${ml}</div>
     <div class="tc-value" style="font-size:18px">${fmt(pTotalA)}</div>
     ${pT>0
-      ? `<div class="tc-target">of ${fmt(pT)} target <span style="color:var(--text3);font-size:10px">(EMEA+APAC)</span></div>
+      ? `<div class="tc-target">of ${fmt(pT)} target</div>
          <span class="tc-badge ${badgeCls(pPct)}">${Math.round(pPct*100)}%</span>`
       : `<div class="tc-target" style="color:var(--text3)">No target</div>`
     }
